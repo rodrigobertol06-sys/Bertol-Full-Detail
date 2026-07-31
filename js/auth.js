@@ -176,12 +176,14 @@ function filtrarUsuariosPorHierarquia(listaUsuarios, logado) {
             return true; 
         }
 
+        // Deve pertencer ao mesmo setor obrigatoriamente
         if (setorUser !== setorLogado) {
             return false;
         }
 
         if (nivelLogado === 'pleno') {
-            return nomeUser === nomeLogado || superiorUser === nomeLogado; 
+            // O Pleno vê a si mesmo, qualquer Júnior do setor, ou quem tiver ele como superior direto
+            return nomeUser === nomeLogado || nivelUser === 'junior' || superiorUser === nomeLogado; 
         } else if (nivelLogado === 'junior') {
             return nomeUser === nomeLogado; 
         }
