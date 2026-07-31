@@ -1,5 +1,5 @@
 // 010. Módulo de Autenticação e Gestão de Sessão (Login e Permissões)
-const URL_WEB_APP = "https://script.google.com/macros/s/AKfycbzKs_U5cHE-r3hd3iIRFKiM0TR_JpTf7b6DAyLzRS8506sMWV3o83ir0_rymNIAIeEN/exec"; // Cole aqui a URL do Apps Script
+const URL_WEB_APP = "https://script.google.com/macros/s/AKfycbzKs_U5cHE-r3hd3iIRFKiM0TR_JpTf7b6DAyLzRS8506sMWV3o83ir0_rymNIAIeEN/exec"; // Mantenha sua URL do Apps Script aqui
 
 let usuarioLogado = null;
 let setorAtivo = '';
@@ -24,9 +24,14 @@ function realizarLogin() {
             }
 
             usuarioLogado = encontrado;
-            document.getElementById('modal-login').classList.add('hidden');
+            fecharModalLogin();
+            
             document.getElementById('info-usuario-logado').innerText = `${usuarioLogado.usuario} (${usuarioLogado.nivel} - ${usuarioLogado.setor})`;
             document.getElementById('texto-botao-login').innerText = 'Trocar Usuário';
+
+            // Alterna da tela home para a tela de dados
+            document.getElementById('tela-home').classList.add('hidden');
+            document.getElementById('tela-dados').classList.remove('hidden');
 
             configurarInterfacePorAcesso();
             carregarDadosPlanilha();
@@ -59,7 +64,33 @@ function configurarInterfacePorAcesso() {
     }
 }
 
-// 013. Função para abrir o modal de login manualmente
+// 013. Funções de controle do modal de login e navegação
 function abrirModalLogin() {
     document.getElementById('modal-login').classList.remove('hidden');
+    document.getElementById('usuario-input').focus();
+}
+
+function fecharModalLogin() {
+    document.getElementById('modal-login').classList.add('hidden');
+}
+
+// Ouvidor global robusto para fechar o modal com a tecla ESC
+window.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const modal = document.getElementById('modal-login');
+        if (modal && !modal.classList.contains('hidden')) {
+            fecharModalLogin();
+        }
+    }
+});
+
+function mudarParaTela(tela) {
+    if(tela === 'home') {
+        document.getElementById('tela-home').classList.remove('hidden');
+        document.getElementById('tela-dados').classList.add('hidden');
+    }
+}
+
+function toggleSidebar() {
+    // Função reservada para menu lateral
 }
