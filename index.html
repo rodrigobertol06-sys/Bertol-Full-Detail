@@ -1,4 +1,4 @@
-<!-- 005. Estrutura HTML e metadados da aplicação hospedada no GitHub -->
+<!-- 005. Estrutura HTML principal da aplicação -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -8,224 +8,59 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        html, body { height: 100vh; overflow: hidden; }
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; display: flex; flex-direction: column; }
-        .nav-card { transition: all .15s ease; cursor: pointer; }
-        .nav-card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px -4px rgba(48,12,7,.1); }
-        .fade-in { animation: fadeIn .2s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px);} to { opacity: 1; transform: translateY(0);} }
-        .custom-scroll::-webkit-scrollbar { width: 5px; }
-        .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .page-scroll-container { overflow-y: auto; flex-grow: 1; height: calc(100vh - 64px); }
-    </style>
 </head>
-<body class="flex flex-col">
+<body class="flex flex-col h-screen overflow-hidden bg-slate-50 font-sans">
 
-    <!-- 006. Cabeçalho principal da interface -->
-    <header style="background-color: #300c07; color: #ffffff;" class="shrink-0 z-40 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)]">
+    <!-- 006. Cabeçalho da aplicação -->
+    <header style="background-color: #300c07; color: #ffffff;" class="shrink-0 z-40 shadow">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center gap-4">
             <div class="flex items-center gap-3">
-                <div class="cursor-pointer flex items-center gap-3 transition-transform hover:scale-105" onclick="trocarTela('home')">
-                    <div class="flex flex-col">
-                        <span class="text-xs md:text-sm font-bold tracking-wide" style="color: #ffffff;">Carbonera & Tomazini</span>
-                        <span class="text-[10px] md:text-xs" style="color: #cbd5e1;">Acompanhamento & Controle vendas</span>
-                    </div>
-                </div>
+                <span class="text-xs md:text-sm font-bold tracking-wide">Carbonera & Tomazini</span>
             </div>
-
             <div class="flex items-center gap-2">
-                <span id="info-usuario-logado" class="text-xs text-[#cbd5e1] hidden md:inline"></span>
-                <button onclick="carregarDadosPlanilha()" class="text-xs font-semibold px-3 py-2 rounded-lg transition-colors flex items-center text-[#ffffff]" style="background-color: #4a130b;" title="Sincronizar com a Planilha">
+                <span id="info-usuario-logado" class="text-xs text-slate-300 hidden md:inline"></span>
+                <button onclick="carregarDadosPlanilha()" class="text-xs font-semibold px-3 py-2 rounded-lg text-white" style="background-color: #4a130b;">
                     <i class="fa-solid fa-rotate mr-1.5"></i> Sincronizar
                 </button>
-                <button id="btnLoginOut" onclick="abrirModalLogin()" class="text-sm font-semibold px-4 py-2 rounded-lg transition-colors flex items-center text-[#ffffff]" style="background-color: #4a130b;">
+                <button onclick="abrirModalLogin()" class="text-sm font-semibold px-4 py-2 rounded-lg text-white" style="background-color: #4a130b;">
                     <i class="fa-solid fa-lock mr-2"></i> <span id="texto-botao-login">Entrar</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- 007. Modal de Identificação e Login integrado com a aba Configurações -->
-    <div id="modal-login" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center fade-in">
-        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl border border-[#cbd5e1] relative space-y-4 mx-4">
-            <div class="flex justify-between items-center border-b border-[#cbd5e1] pb-3">
-                <h3 class="font-bold text-base" style="color: #300c07;">Identificação de Acesso</h3>
-            </div>
-            <div class="space-y-3 pt-1">
-                <div>
-                    <input type="text" id="usuario-input" placeholder="Nome de Usuário (Ex: Felipe)" class="w-full px-4 py-2.5 rounded-xl border border-[#cbd5e1] text-xs text-[#1e293b] focus:outline-none focus:border-[#300c07] bg-[#f8fafc]">
-                </div>
-                <div>
-                    <input type="password" id="senha-input" placeholder="Sua senha" class="w-full px-4 py-2.5 rounded-xl border border-[#cbd5e1] text-xs text-[#1e293b] focus:outline-none focus:border-[#300c07] bg-[#f8fafc]">
-                </div>
-                <button onclick="realizarLogin()" class="w-full py-3 text-white text-xs font-bold rounded-xl transition-all shadow-md" style="background-color: #300c07;">
-                    Entrar no Sistema
-                </button>
-            </div>
+    <!-- 007. Modal de Login -->
+    <div id="modal-login" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4 mx-4 border border-slate-200">
+            <h3 class="font-bold text-base" style="color: #300c07;">Identificação de Acesso</h3>
+            <input type="text" id="usuario-input" placeholder="Nome de Usuário" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-[#300c07]">
+            <input type="password" id="senha-input" placeholder="Sua senha" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-[#300c07]">
+            <button onclick="realizarLogin()" class="w-full py-3 text-white text-xs font-bold rounded-xl shadow-md" style="background-color: #300c07;">Entrar no Sistema</button>
         </div>
     </div>
 
-    <div class="flex flex-1 max-w-7xl w-full mx-auto relative overflow-hidden">
-        <main class="page-scroll-container custom-scroll flex-grow p-6 w-full space-y-6">
-            
-            <!-- 008. Seção de Cards de Setor (Visível apenas para nível Senior / Master) -->
-            <div id="secao-setores-container" class="bg-white rounded-2xl p-4 border border-[#cbd5e1] shadow-sm space-y-3 hidden">
-                <span class="text-xs font-bold text-[#64748b] uppercase tracking-wider">Setores Disponíveis (Controle de Acesso Master)</span>
-                <div id="cards-setores-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
+    <!-- 008. Container Principal -->
+    <main class="p-6 space-y-6 max-w-7xl w-full mx-auto overflow-y-auto flex-grow">
+        <div id="secao-setores-container" class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hidden">
+            <span class="text-xs font-bold text-slate-500 uppercase">Setores Disponíveis (Master)</span>
+            <div id="cards-setores-grid" class="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-2"></div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+            <h3 id="titulo-painel-dados" class="font-bold text-sm" style="color: #300c07;">Dados Sincronizados</h3>
+            <div class="overflow-x-auto max-h-[400px] border border-slate-200 rounded-xl">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead id="tabela-cabecalho" class="bg-slate-50 text-slate-700 sticky top-0 border-b border-slate-200"></thead>
+                    <tbody id="tabela-corpo" class="divide-y divide-slate-200">
+                        <tr><td colspan="10" class="p-4 text-center text-slate-500">Faça o login para carregar os dados.</td></tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
+    </main>
 
-            <!-- 009. Painel da Tabela de Dados Sincronizados -->
-            <div id="conteudo-dinamico" class="bg-white rounded-2xl p-6 border border-[#cbd5e1] space-y-4 fade-in">
-                <div class="secao-painel space-y-3">
-                    <h3 id="titulo-painel-dados" class="font-bold text-sm flex items-center gap-2" style="color: #300c07;">
-                        <i class="fa-solid fa-table"></i> Dados Sincronizados
-                    </h3>
-                    <p class="text-xs text-[#64748b]">Visualização em tempo real dos dados importados da planilha.</p>
-                    
-                    <div class="overflow-x-auto custom-scroll max-h-[400px] border border-[#cbd5e1] rounded-xl">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead id="tabela-cabecalho" class="bg-[#f8fafc] text-[#300c07] uppercase border-b border-[#cbd5e1] sticky top-0"></thead>
-                            <tbody id="tabela-corpo" class="divide-y divide-[#cbd5e1]">
-                                <tr><td colspan="10" class="p-4 text-center text-[#64748b]">Faça o login para carregar os dados.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-        </main>
-    </div>
-
-    <script>
-        // 010. URL do Web App do Google Apps Script
-        const URL_WEB_APP = "SUA_URL_DO_WEB_APP_AQUI"; 
-
-        let usuarioLogado = null;
-        let setorAtivo = '';
-
-        window.onload = function() {
-            // Inicialização padrão
-        };
-
-        // 011. Lógica de autenticação consultando os dados da aba Configurações
-        function realizarLogin() {
-            const usuarioInput = document.getElementById('usuario-input').value.trim();
-            const senhaInput = document.getElementById('senha-input').value.trim();
-
-            if(!usuarioInput || !senhaInput) {
-                alert('Por favor, preencha o usuário e a senha.');
-                return;
-            }
-
-            fetch(`${URL_WEB_APP}?acao=carregarUsuarios`)
-                .then(res => res.json())
-                .then(usuarios => {
-                    const encontrado = usuarios.find(u => u.usuario.toLowerCase() === usuarioInput.toLowerCase() && u.senha === senhaInput);
-
-                    if (!encontrado) {
-                        alert('Usuário ou senha incorretos!');
-                        return;
-                    }
-
-                    usuarioLogado = encontrado;
-                    document.getElementById('modal-login').classList.add('hidden');
-                    document.getElementById('info-usuario-logado').innerText = `${usuarioLogado.usuario} (${usuarioLogado.nivel} - ${usuarioLogado.setor})`;
-                    document.getElementById('texto-botao-login').innerText = 'Trocar Usuário';
-
-                    configurarInterfacePorAcesso();
-                    carregarDadosPlanilha();
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert('Erro ao conectar com a planilha de configurações.');
-                });
-        }
-
-        // 012. Configuração de exibição baseada no nível de acesso (Senior = Master, Pleno/Junior = Limitado)
-        function configurarInterfacePorAcesso() {
-            const containerSetores = document.getElementById('secao-setores-container');
-            const gridSetores = document.getElementById('cards-setores-grid');
-            
-            if (usuarioLogado.nivel.toLowerCase() === 'senior') {
-                containerSetores.classList.remove('hidden');
-                
-                const setoresDisponiveis = ["Vendas", "SAC", "Financeiro", "Operações"]; 
-                
-                gridSetores.innerHTML = setoresDisponiveis.map(setor => `
-                    <button onclick="filtrarPorSetor('${setor}')" class="nav-card flex items-center gap-3 p-3 rounded-xl border border-[#cbd5e1] bg-white text-[#64748b] font-semibold text-xs transition-all hover:bg-[#f8fafc] w-full text-left">
-                        <div class="p-2 bg-[#f1f5f9] rounded-lg text-[#64748b]"><i class="fa-solid fa-layer-group"></i></div>
-                        <div>
-                            <span class="block font-bold text-[#300c07]">Setor: ${setor}</span>
-                            <span class="text-[10px] text-[#64748b]">Acesso Master (Senior)</span>
-                        </div>
-                    </button>
-                `).join('');
-                
-                setorAtivo = ''; 
-            } else {
-                containerSetores.classList.add('hidden');
-                setorAtivo = usuarioLogado.setor;
-            }
-        }
-
-        // 013. Função para alternar entre os setores (exclusiva para Senior)
-        function filtrarPorSetor(setor) {
-            setorAtivo = setor;
-            document.getElementById('titulo-painel-dados').innerHTML = `<i class="fa-solid fa-table"></i> Dados do Setor: ${setor}`;
-            carregarDadosPlanilha();
-        }
-
-        // 014. Requisição dos dados da planilha considerando o filtro de permissão de setor
-        function carregarDadosPlanilha() {
-            if (!usuarioLogado) return;
-
-            const corpo = document.getElementById('tabela-corpo');
-            const cabecalho = document.getElementById('tabela-cabecalho');
-            
-            corpo.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-[#64748b]">Buscando dados da planilha...</td></tr>`;
-
-            let setorParam = usuarioLogado.nivel.toLowerCase() === 'senior' ? setorAtivo : usuarioLogado.setor;
-
-            fetch(`${URL_WEB_APP}?acao=obterDados&setor=${encodeURIComponent(setorParam)}`)
-                .then(response => response.json())
-                .then(dados => {
-                    if (!dados || dados.length === 0) {
-                        corpo.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-[#64748b]">Nenhum registro encontrado para este setor.</td></tr>`;
-                        cabecalho.innerHTML = '';
-                        return;
-                    }
-
-                    const chaves = Object.keys(dados[0]);
-                    cabecalho.innerHTML = `<tr class="border-b border-[#cbd5e1]">` + 
-                        chaves.map(k => `<th class="p-3 font-bold">${k}</th>`).join('') + 
-                        `</tr>`;
-
-                    corpo.innerHTML = dados.map(row => {
-                        return `<tr class="hover:bg-[#f8fafc] transition-colors">` + 
-                            chaves.map(k => `<td class="p-3 text-[#1e293b]">${row[k] !== undefined ? row[k] : ''}</td>`).join('') + 
-                            `</tr>`;
-                    }).join('');
-                })
-                .catch(erro => {
-                    console.error(erro);
-                    corpo.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-red-600">Erro ao carregar dados da planilha.</td></tr>`;
-                });
-        }
-
-        // 015. Funções auxiliares para controle de telas e modais
-        function abrirModalLogin() {
-            document.getElementById('modal-login').classList.remove('hidden');
-        }
-
-        function trocarTela(tela) {
-            if(tela === 'home') {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        }
-    </script>
+    <!-- 009. Importação dos Módulos JS Separados -->
+    <script src="js/auth.js"></script>
+    <script src="js/data.js"></script>
 </body>
 </html>
