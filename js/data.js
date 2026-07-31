@@ -196,22 +196,35 @@ function verificarFiltroVendas() {
     }
 }
 
-// 024. Função auxiliar para filtrar a lista de usuários de acordo com o nível de acesso logado
+// 024. Função auxiliar para filtrar a lista de usuários por nível hierárquico e pelo mesmo setor
 function filtrarUsuariosPorHierarquia(listaUsuarios, logado) {
     if (!logado) return [];
     
     const nivelLogado = logado.nivel ? logado.nivel.toLowerCase() : '';
+    const setorLogado = logado.setor ? logado.setor.trim().toLowerCase() : '';
 
     return listaUsuarios.filter(u => {
         const nivelUser = u.nivel ? u.nivel.toLowerCase() : '';
+        const setorUser = u.setor ? u.setor.trim().toLowerCase() : '';
 
+        // Se for Sênior, pode ver todos os setores e níveis
         if (nivelLogado === 'senior') {
             return true; 
-        } else if (nivelLogado === 'pleno') {
+        }
+
+        // Para Pleno e Júnior, a regra obrigatoriamente exige que seja do mesmo setor
+        if (setorUser !== setorLogado) {
+            return false;
+        }
+
+        if (nivelLogado === 'pleno') {
+            // Pleno vê Pleno e Júnior do seu próprio setor
             return nivelUser === 'pleno' || nivelUser === 'junior'; 
         } else if (nivelLogado === 'junior') {
+            // Júnior vê apenas ele mesmo no seu setor
             return u.usuario.toLowerCase() === logado.usuario.toLowerCase(); 
         }
+        
         return false;
     });
 }
