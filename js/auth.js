@@ -161,3 +161,36 @@ function mudarParaTela(tela) {
         document.getElementById('tela-dados').classList.remove('hidden');
     }
 }
+// 027. Função auxiliar para validar hierarquia e permissão global do setor Sistema
+function filtrarUsuariosPorHierarquia(listaUsuarios, logado) {
+    if (!logado) return [];
+    
+    const nivelLogado = logado.nivel ? logado.nivel.toLowerCase() : '';
+    const setorLogado = logado.setor ? logado.setor.trim().toLowerCase() : '';
+    const nomeLogado = logado.usuario ? logado.usuario.trim().toLowerCase() : '';
+
+    return listaUsuarios.filter(u => {
+        const nivelUser = u.nivel ? u.nivel.toLowerCase() : '';
+        const setorUser = u.setor ? u.setor.trim().toLowerCase() : '';
+        const superiorUser = u.superiorDireto ? u.superiorDireto.trim().toLowerCase() : '';
+        const nomeUser = u.usuario ? u.usuario.trim().toLowerCase() : '';
+
+        // Se o usuário logado for do setor "Sistema" ou tiver nível "Senior", acesso total (vê tudo de todos)
+        if (setorLogado === 'sistema' || nivelLogado === 'senior') {
+            return true; 
+        }
+
+        // Deve pertencer ao mesmo setor obrigatoriamente
+        if (setorUser !== setorLogado) {
+            return false;
+        }
+
+        if (nivelLogado === 'pleno') {
+            return nomeUser === nomeLogado || superiorUser === nomeLogado; 
+        } else if (nivelLogado === 'junior') {
+            return nomeUser === nomeLogado; 
+        }
+        
+        return false;
+    });
+}
