@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carbonera & Tomazini - Controle de Processos</title>
+    <title>Carbonera & Tomazini - Controle de Vendas</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -29,54 +29,49 @@
 </head>
 <body class="flex flex-col">
 
-    <!-- COMENTÁRIO: CABEÇALHO DA APLICAÇÃO COM LOGO EM IMAGEM, BOTÃO HOME E LOGIN -->
-    <header class="bg-[#300c07] text-[#ffffff] shrink-0 z-40 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)]">
+    <!-- CABEÇALHO DA APLICAÇÃO -->
+    <header style="background-color: #300c07; color: #ffffff;" class="shrink-0 z-40 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)]">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center gap-4">
             
             <div class="flex items-center gap-3">
-                <!-- Botão do Menu Lateral (Opcional/Oculto se não necessário) -->
-                <button id="btnMenu" onclick="toggleSidebar()" class="hidden p-2.5 rounded-lg text-[#cbd5e1] transition-colors bg-[#4a130b] hover:bg-[#5a1a10]">
+                <button id="btnMenu" onclick="toggleSidebar()" class="hidden p-2.5 rounded-lg text-[#cbd5e1] transition-colors" style="background-color: #4a130b;">
                     <i class="fa-solid fa-bars"></i>
                 </button>
                 
-                <!-- Logo com Imagem e Link para a Tela Inicial -->
                 <div class="cursor-pointer flex items-center gap-3 transition-transform hover:scale-105" onclick="trocarTela('home')">
                     <img src="./assets/logo-escritorio.png" alt="Logo" class="h-9 w-auto object-contain">
                     <div class="flex flex-col">
-                        <span class="text-xs md:text-sm font-bold tracking-wide text-white">Carbonera & Tomazini</span>
-                        <span class="text-[10px] md:text-xs text-[#cbd5e1]">Dra. Nayara D. Serozini | CREFITO-10 425494-F</span>
+                        <span class="text-xs md:text-sm font-bold tracking-wide" style="color: #ffffff;">Carbonera & Tomazini</span>
+                        <span class="text-[10px] md:text-xs" style="color: #cbd5e1;">Acompanhamento & Controle vendas</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Botão de Acesso Restrito -->
-            <button id="btnLoginOut" onclick="abrirModalLogin()" class="text-sm font-semibold px-4 py-2 rounded-lg transition-colors flex items-center text-[#ffffff] bg-[#4a130b] hover:bg-[#5a1a10]">
+            <button id="btnLoginOut" onclick="abrirModalLogin()" class="text-sm font-semibold px-4 py-2 rounded-lg transition-colors flex items-center text-[#ffffff]" style="background-color: #4a130b;">
                 <i class="fa-solid fa-lock mr-2"></i> Acesso Restrito
             </button>
         </div>
     </header>
 
-    <!-- COMENTÁRIO: MODAL DE ACESSO RESTRITO (LOGIN) -->
+    <!-- MODAL DE ACESSO RESTRITO (LOGIN) -->
     <div id="modal-login" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden fade-in">
-        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-100 relative space-y-4 mx-4">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl border border-[#cbd5e1] relative space-y-4 mx-4">
             
-            <!-- Cabeçalho do Modal com Botão Fechar -->
-            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 class="font-bold text-base text-[#300c07]">Acesso Restrito</h3>
-                <button onclick="fecharModalLogin()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg transition-colors">
+            <div class="flex justify-between items-center border-b border-[#cbd5e1] pb-3">
+                <h3 class="font-bold text-base" style="color: #300c07;">Acesso Restrito</h3>
+                <button onclick="fecharModalLogin()" class="text-[#64748b] hover:text-[#1e293b] p-1 rounded-lg transition-colors">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
-            <!-- Formulário de Login -->
             <div class="space-y-3 pt-1">
                 <div>
-                    <input type="text" id="usuario-input" placeholder="Nome de Usuário" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-700 focus:outline-none focus:border-[#300c07] bg-slate-50/50">
+                    <input type="text" id="usuario-input" placeholder="Nome de Usuário" class="w-full px-4 py-2.5 rounded-xl border border-[#cbd5e1] text-xs text-[#1e293b] focus:outline-none focus:border-[#300c07] bg-[#f8fafc]">
                 </div>
                 <div>
-                    <input type="password" id="senha-input" placeholder="Sua senha" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-700 focus:outline-none focus:border-[#300c07] bg-slate-50/50">
+                    <input type="password" id="senha-input" placeholder="Sua senha" class="w-full px-4 py-2.5 rounded-xl border border-[#cbd5e1] text-xs text-[#1e293b] focus:outline-none focus:border-[#300c07] bg-[#f8fafc]">
                 </div>
-                <button onclick="realizarLogin()" class="w-full py-3 bg-[#300c07] hover:bg-[#4a130b] text-white text-xs font-bold rounded-xl transition-all shadow-md">
+                <button onclick="realizarLogin()" class="w-full py-3 text-white text-xs font-bold rounded-xl transition-all shadow-md" style="background-color: #300c07;">
                     Entrar no Sistema
                 </button>
             </div>
@@ -84,147 +79,134 @@
     </div>
 
     <div class="flex flex-1 max-w-7xl w-full mx-auto relative overflow-hidden">
-        <!-- COMENTÁRIO: CONTAINER PRINCIPAL DE CONTEÚDO -->
         <main class="page-scroll-container custom-scroll flex-grow p-6 w-full space-y-6">
             
-            <!-- COMENTÁRIO: BARRA DE NAVEGAÇÃO DOS MÓDULOS DE OPERAÇÃO -->
-            <div class="bg-white rounded-2xl p-4 border border-[#e2e8f0] shadow-sm space-y-3">
+            <!-- BARRA DE NAVEGAÇÃO DOS MÓDULOS -->
+            <div class="bg-white rounded-2xl p-4 border border-[#cbd5e1] shadow-sm space-y-3">
                 <span class="text-xs font-bold text-[#64748b] uppercase tracking-wider">Módulos de Operação e Processo</span>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <!-- Botão Módulo 1 -->
-                    <button onclick="mudarSecao('setup')" id="btn-setup" class="nav-card flex items-center gap-3 p-3 rounded-xl border border-blue-200 bg-blue-50 text-blue-700 font-semibold text-xs transition-all shadow-sm w-full text-left">
-                        <div class="p-2 bg-blue-100 rounded-lg text-blue-600">
+                    <button onclick="mudarSecao('setup')" id="btn-setup" class="nav-card flex items-center gap-3 p-3 rounded-xl border border-[#300c07] bg-[#fcf5f3] text-[#300c07] font-semibold text-xs transition-all shadow-sm w-full text-left">
+                        <div class="p-2 rounded-lg text-white" style="background-color: #300c07;">
                             <i class="fa-solid fa-sliders"></i>
                         </div>
                         <div>
-                            <span class="block font-bold">Setup & Espessura</span>
-                            <span class="text-[10px] text-blue-500 font-normal">Parâmetros de máquina</span>
+                            <span class="block font-bold">Vendas 1</span>
+                            <span class="text-[10px] text-[#64748b] font-normal">Subtitulo</span>
                         </div>
                     </button>
 
-                    <!-- Botão Módulo 2 -->
-                    <button onclick="mudarSecao('preparacao')" id="btn-preparacao" class="nav-card flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white text-slate-700 font-semibold text-xs transition-all hover:bg-slate-50 w-full text-left">
-                        <div class="p-2 bg-slate-100 rounded-lg text-slate-600">
+                    <button onclick="mudarSecao('preparacao')" id="btn-preparacao" class="nav-card flex items-center gap-3 p-3 rounded-xl border border-[#cbd5e1] bg-white text-[#64748b] font-semibold text-xs transition-all hover:bg-[#f8fafc] w-full text-left">
+                        <div class="p-2 bg-[#f1f5f9] rounded-lg text-[#64748b]">
                             <i class="fa-solid fa-broom"></i>
                         </div>
                         <div>
-                            <span class="block font-bold">Preparação & Limpeza</span>
-                            <span class="text-[10px] text-slate-500 font-normal">Organização de linha</span>
+                            <span class="block font-bold">Vendas 02</span>
+                            <span class="text-[10px] text-[#64748b] font-normal">Subtitulo</span>
                         </div>
                     </button>
 
-                    <!-- Botão Módulo 3 -->
-                    <button onclick="mudarSecao('decapagem')" id="btn-decapagem" class="nav-card flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white text-slate-700 font-semibold text-xs transition-all hover:bg-slate-50 w-full text-left">
-                        <div class="p-2 bg-slate-100 rounded-lg text-slate-600">
+                    <button onclick="mudarSecao('decapagem')" id="btn-decapagem" class="nav-card flex items-center gap-3 p-3 rounded-xl border border-[#cbd5e1] bg-white text-[#64748b] font-semibold text-xs transition-all hover:bg-[#f8fafc] w-full text-left">
+                        <div class="p-2 bg-[#f1f5f9] rounded-lg text-[#64748b]">
                             <i class="fa-solid fa-flask"></i>
                         </div>
                         <div>
-                            <span class="block font-bold">Decapagem Química</span>
-                            <span class="text-[10px] text-slate-500 font-normal">Tratamento de superfícies</span>
+                            <span class="block font-bold">Vendas 03</span>
+                            <span class="text-[10px] text-[#64748b] font-normal">Ajustar subtitulo</span>
                         </div>
                     </button>
 
-                    <!-- Botão Módulo 4 -->
-                    <button onclick="mudarSecao('pop')" id="btn-pop" class="nav-card flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white text-slate-700 font-semibold text-xs transition-all hover:bg-slate-50 w-full text-left">
-                        <div class="p-2 bg-slate-100 rounded-lg text-slate-600">
+                    <button onclick="mudarSecao('pop')" id="btn-pop" class="nav-card flex items-center gap-3 p-3 rounded-xl border border-[#cbd5e1] bg-white text-[#64748b] font-semibold text-xs transition-all hover:bg-[#f8fafc] w-full text-left">
+                        <div class="p-2 bg-[#f1f5f9] rounded-lg text-[#64748b]">
                             <i class="fa-solid fa-book-open"></i>
                         </div>
                         <div>
-                            <span class="block font-bold">POP Operacional</span>
-                            <span class="text-[10px] text-slate-500 font-normal">Procedimentos padrão</span>
+                            <span class="block font-bold">Vendas 04</span>
+                            <span class="text-[10px] text-[#64748b] font-normal">Subtitulo</span>
                         </div>
                     </button>
                 </div>
             </div>
 
-            <!-- COMENTÁRIO: PAINEL DE CARDS DE INDICADORES / DASHBOARD -->
+            <!-- PAINEL DE CARDS DE INDICADORES / DASHBOARD -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 
-                <!-- Botão Indicador: Pendências -->
-                <button onclick="filtrarIndicador('pendencias')" class="nav-card bg-white rounded-2xl p-4 border border-rose-100 bg-gradient-to-br from-rose-50/50 to-white shadow-sm flex items-center gap-4 text-left w-full">
-                    <div class="p-3 bg-rose-600 text-white rounded-xl shadow-md flex items-center justify-center w-12 h-12 shrink-0">
+                <button onclick="filtrarIndicador('pendencias')" class="nav-card bg-white rounded-2xl p-4 border border-[#cbd5e1] shadow-sm flex items-center gap-4 text-left w-full">
+                    <div class="p-3 text-white rounded-xl shadow-md flex items-center justify-center w-12 h-12 shrink-0" style="background-color: #300c07;">
                         <i class="fa-solid fa-triangle-exclamation text-lg"></i>
                     </div>
                     <div>
-                        <span class="text-[10px] font-bold text-rose-600 uppercase tracking-wider block">Pendências</span>
-                        <span class="text-xl font-extrabold text-slate-800">1</span>
-                        <span class="block text-[11px] text-slate-500">Chamados & Intervenções</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider block" style="color: #300c07;">Pendências</span>
+                        <span class="text-xl font-extrabold text-[#1e293b]">1</span>
+                        <span class="block text-[11px] text-[#64748b]">Chamados & Intervenções</span>
                     </div>
                 </button>
 
-                <!-- Botão Indicador: Em Atraso -->
-                <button onclick="filtrarIndicador('atraso')" class="nav-card bg-white rounded-2xl p-4 border border-red-100 bg-gradient-to-br from-red-50/50 to-white shadow-sm flex items-center gap-4 text-left w-full">
-                    <div class="p-3 bg-red-600 text-white rounded-xl shadow-md flex items-center justify-center w-12 h-12 shrink-0">
+                <button onclick="filtrarIndicador('atraso')" class="nav-card bg-white rounded-2xl p-4 border border-[#cbd5e1] shadow-sm flex items-center gap-4 text-left w-full">
+                    <div class="p-3 text-white rounded-xl shadow-md flex items-center justify-center w-12 h-12 shrink-0" style="background-color: #4a130b;">
                         <i class="fa-solid fa-circle-xmark text-lg"></i>
                     </div>
                     <div>
-                        <span class="text-[10px] font-bold text-red-600 uppercase tracking-wider block">Em Atraso</span>
-                        <span class="text-xl font-extrabold text-slate-800">0</span>
-                        <span class="block text-[11px] text-slate-500">Checklists Vencidos</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider block" style="color: #4a130b;">Em Atraso</span>
+                        <span class="text-xl font-extrabold text-[#1e293b]">0</span>
+                        <span class="block text-[11px] text-[#64748b]">Checklists Vencidos</span>
                     </div>
                 </button>
 
-                <!-- Botão Indicador: Para Hoje -->
-                <button onclick="filtrarIndicador('hoje')" class="nav-card bg-white rounded-2xl p-4 border border-amber-100 bg-gradient-to-br from-amber-50/50 to-white shadow-sm flex items-center gap-4 text-left w-full">
-                    <div class="p-3 bg-amber-500 text-white rounded-xl shadow-md flex items-center justify-center w-12 h-12 shrink-0">
+                <button onclick="filtrarIndicador('hoje')" class="nav-card bg-white rounded-2xl p-4 border border-[#cbd5e1] shadow-sm flex items-center gap-4 text-left w-full">
+                    <div class="p-3 text-white rounded-xl shadow-md flex items-center justify-center w-12 h-12 shrink-0" style="background-color: #5a1a10;">
                         <i class="fa-solid fa-clock text-lg"></i>
                     </div>
                     <div>
-                        <span class="text-[10px] font-bold text-amber-600 uppercase tracking-wider block">Para Hoje</span>
-                        <span class="text-xl font-extrabold text-slate-800">0</span>
-                        <span class="block text-[11px] text-slate-500">Revisões do Dia</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider block" style="color: #5a1a10;">Para Hoje</span>
+                        <span class="text-xl font-extrabold text-[#1e293b]">0</span>
+                        <span class="block text-[11px] text-[#64748b]">Revisões do Dia</span>
                     </div>
                 </button>
 
-                <!-- Botão Indicador: Programação -->
-                <button onclick="filtrarIndicador('programacao')" class="nav-card bg-white rounded-2xl p-4 border border-blue-100 bg-gradient-to-br from-blue-50/50 to-white shadow-sm flex items-center gap-4 text-left w-full">
-                    <div class="p-3 bg-blue-600 text-white rounded-xl shadow-md flex items-center justify-center w-12 h-12 shrink-0">
+                <button onclick="filtrarIndicador('programacao')" class="nav-card bg-white rounded-2xl p-4 border border-[#cbd5e1] shadow-sm flex items-center gap-4 text-left w-full">
+                    <div class="p-3 text-white rounded-xl shadow-md flex items-center justify-center w-12 h-12 shrink-0" style="background-color: #300c07;">
                         <i class="fa-solid fa-calendar-days text-lg"></i>
                     </div>
                     <div>
-                        <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider block">Programação</span>
-                        <span class="text-xl font-extrabold text-slate-800">1</span>
-                        <span class="block text-[11px] text-slate-500">Próximos 7 dias</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider block" style="color: #300c07;">Programação</span>
+                        <span class="text-xl font-extrabold text-[#1e293b]">1</span>
+                        <span class="block text-[11px] text-[#64748b]">Próximos 7 dias</span>
                     </div>
                 </button>
 
             </div>
 
-            <!-- COMENTÁRIO: CONTEÚDO DINÂMICO DOS PAINÉIS DE CADA MÓDULO -->
-            <div id="conteudo-dinamico" class="bg-[#ffffff] rounded-2xl p-6 border border-[#e2e8f0] space-y-4 fade-in">
+            <!-- CONTEÚDO DINÂMICO DOS PAINÉIS -->
+            <div id="conteudo-dinamico" class="bg-white rounded-2xl p-6 border border-[#cbd5e1] space-y-4 fade-in">
                 
-                <!-- Painel 1: Setup & Espessura -->
                 <div id="painel-setup" class="secao-painel space-y-3">
-                    <h3 class="font-bold text-sm text-[#300c07] flex items-center gap-2">
-                        <i class="fa-solid fa-sliders text-blue-600"></i> Parâmetros de Setup & Espessura
+                    <h3 class="font-bold text-sm flex items-center gap-2" style="color: #300c07;">
+                        <i class="fa-solid fa-sliders" style="color: #300c07;"></i> Parâmetros de Setup & Espessura
                     </h3>
                     <p class="text-xs text-[#64748b]">Aqui você gerencia os ajustes finos e a parametrização inicial para garantir tolerâncias precisas nos ciclos de produção industrial.</p>
-                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 text-xs text-slate-600">
-                        <strong>Dica Técnica:</strong> Sempre valide a calibração dos sensores antes de iniciar a execução do lote.
+                    <div class="p-4 bg-[#f8fafc] rounded-xl border border-[#cbd5e1] text-xs text-[#64748b]">
+                        <strong style="color: #300c07;">Dica Técnica:</strong> Sempre valide a calibração dos sensores antes de iniciar a execução do lote.
                     </div>
                 </div>
 
-                <!-- Painel 2: Preparação & Limpeza -->
                 <div id="painel-preparacao" class="secao-painel space-y-3 hidden">
-                    <h3 class="font-bold text-sm text-[#300c07] flex items-center gap-2">
-                        <i class="fa-solid fa-broom text-slate-700"></i> Diretrizes de Preparação & Limpeza
+                    <h3 class="font-bold text-sm flex items-center gap-2" style="color: #300c07;">
+                        <i class="fa-solid fa-broom" style="color: #300c07;"></i> Diretrizes de Preparação & Limpeza
                     </h3>
                     <p class="text-xs text-[#64748b]">Garante a integridade do ambiente e previne contaminações cruzadas nas etapas de montagem e usinagem.</p>
                 </div>
 
-                <!-- Painel 3: Decapagem Química -->
                 <div id="painel-decapagem" class="secao-painel space-y-3 hidden">
-                    <h3 class="font-bold text-sm text-[#300c07] flex items-center gap-2">
-                        <i class="fa-solid fa-flask text-slate-700"></i> Processos de Decapagem Química
+                    <h3 class="font-bold text-sm flex items-center gap-2" style="color: #300c07;">
+                        <i class="fa-solid fa-flask" style="color: #300c07;"></i> Processos de Decapagem Química
                     </h3>
                     <p class="text-xs text-[#64748b]">Controle rigoroso de banhos químicos, concentrações de solução e tempos de imersão para remoção de óxidos.</p>
                 </div>
 
-                <!-- Painel 4: POP Operacional -->
                 <div id="painel-pop" class="secao-painel space-y-3 hidden">
-                    <h3 class="font-bold text-sm text-[#300c07] flex items-center gap-2">
-                        <i class="fa-solid fa-book-open text-slate-700"></i> Documentação e POP Operacional
+                    <h3 class="font-bold text-sm flex items-center gap-2" style="color: #300c07;">
+                        <i class="fa-solid fa-book-open" style="color: #300c07;"></i> Documentação e POP Operacional
                     </h3>
                     <p class="text-xs text-[#64748b]">Repositório central de instruções de trabalho padronizadas para consulta rápida pela equipe no chão de fábrica.</p>
                 </div>
@@ -234,7 +216,7 @@
         </main>
     </div>
 
-    <!-- COMENTÁRIO: SCRIPT DE CONTROLE DO SISTEMA (LOGIN, HOME E NAVEGAÇÃO) -->
+    <!-- SCRIPT DE CONTROLE -->
     <script>
         function abrirModalLogin() {
             document.getElementById('modal-login').classList.remove('hidden');
@@ -277,12 +259,14 @@
                 
                 if (sec === idSecao) {
                     painel.classList.remove('hidden');
-                    botao.className = "nav-card flex items-center gap-3 p-3 rounded-xl border border-blue-200 bg-blue-50 text-blue-700 font-semibold text-xs transition-all shadow-sm w-full text-left";
-                    botao.querySelector('div').className = "p-2 bg-blue-100 rounded-lg text-blue-600";
+                    botao.className = "nav-card flex items-center gap-3 p-3 rounded-xl border border-[#300c07] bg-[#fcf5f3] text-[#300c07] font-semibold text-xs transition-all shadow-sm w-full text-left";
+                    botao.querySelector('div').className = "p-2 rounded-lg text-white";
+                    botao.querySelector('div').style.backgroundColor = "#300c07";
                 } else {
                     painel.classList.add('hidden');
-                    botao.className = "nav-card flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white text-slate-700 font-semibold text-xs transition-all hover:bg-slate-50 w-full text-left";
-                    botao.querySelector('div').className = "p-2 bg-slate-100 rounded-lg text-slate-600";
+                    botao.className = "nav-card flex items-center gap-3 p-3 rounded-xl border border-[#cbd5e1] bg-white text-[#64748b] font-semibold text-xs transition-all hover:bg-[#f8fafc] w-full text-left";
+                    botao.querySelector('div').className = "p-2 bg-[#f1f5f9] rounded-lg text-[#64748b]";
+                    botao.querySelector('div').style.backgroundColor = "";
                 }
             });
         }
