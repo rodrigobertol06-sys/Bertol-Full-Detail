@@ -133,6 +133,103 @@
                         <!-- Os cards de usuários de vendas serão injetados aqui via JS -->
                     </div>
                 </div>
+                    <!-- 030. Bloco de Registro de Vendedores dentro do Painel de Atividades -->
+    <div id="painel-registro-vendedor" class="hidden bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+                <h3 class="font-bold text-sm" style="color: #300c07;">Novo Registro de Vendas</h3>
+                <p class="text-xs text-slate-500">Preencha os campos abaixo para registrar um novo cliente na aba Registros_vendedores.</p>
+            </div>
+        </div>
+
+        <form id="form-registro-vendedor" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            
+            <!-- Nome do Cliente -->
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-slate-700">Nome do Cliente</label>
+                <input type="text" id="nome-cliente" required placeholder="Nome completo" 
+                       class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-[#300c07]">
+            </div>
+
+            <!-- Número Telefone -->
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-slate-700">Número Telefone</label>
+                <input type="text" id="tel-cliente" required placeholder="(00) 00000-0000" 
+                       class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-[#300c07]">
+            </div>
+
+            <!-- Status (Validação Configurações N3:N) -->
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-slate-700">Status</label>
+                <select id="status-cliente" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:border-[#300c07]">
+                    <option value="">Selecione o Status...</option>
+                </select>
+            </div>
+
+            <!-- Registro status atual -->
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-slate-700">Registro status atual</label>
+                <input type="text" id="reg-status-atual" placeholder="Detalhes do status atual" 
+                       class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-[#300c07]">
+            </div>
+
+            <!-- Tipo de Benefício (Validação Configurações V3:V) -->
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-slate-700">Tipo de Benefício</label>
+                <select id="tipo-beneficio" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:border-[#300c07]">
+                    <option value="">Selecione o benefício...</option>
+                </select>
+            </div>
+
+            <!-- Filial (Validação Configurações I3:I) -->
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-slate-700">Filial</label>
+                <select id="filial" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:border-[#300c07]">
+                    <option value="">Selecione a filial...</option>
+                </select>
+            </div>
+
+            <!-- TAG Anúncio -->
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-slate-700">TAG Anúncio</label>
+                <input type="text" id="tag-anuncio" placeholder="Ex: Digital, Meta Ads" 
+                       class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-[#300c07]">
+            </div>
+
+            <!-- Grupo Whats - Sim/Não -->
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-slate-700">Grupo Whats</label>
+                <select id="grupo-whats" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:border-[#300c07]">
+                    <option value="Sim">Sim</option>
+                    <option value="Não">Não</option>
+                </select>
+            </div>
+
+            <!-- Auxílio Doença - Sim/Não -->
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-slate-700">Auxílio Doença</label>
+                <select id="aux-doenca" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:border-[#300c07]">
+                    <option value="Não">Não</option>
+                    <option value="Sim">Sim</option>
+                </select>
+            </div>
+
+            <!-- Qual robô ativou -->
+            <div class="space-y-1 sm:col-span-2 md:col-span-3">
+                <label class="text-xs font-bold text-slate-700">Qual robô ativou?</label>
+                <input type="text" id="robo-ativou" placeholder="Nome ou ID do robô" 
+                       class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-[#300c07]">
+            </div>
+
+            <!-- Botão de Registrar -->
+            <div class="sm:col-span-2 md:col-span-3 flex justify-end pt-2">
+                <button type="submit" class="px-6 py-2.5 text-white text-xs font-bold rounded-xl shadow-md transition-all" style="background-color: #300c07;">
+                    <i class="fa-solid fa-floppy-disk mr-2"></i> Registrar na Planilha
+                </button>
+            </div>
+        </form>
+    </div>
+
 
                 <!-- 021. Tabela de Dados Sincronizados -->
                 <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
