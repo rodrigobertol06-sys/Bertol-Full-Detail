@@ -59,6 +59,13 @@
             </main>
         </div>
     </div>
+<!-- No final do teu index.html, antes de fechar a tag body -->
+<script type="module">
+    import { calcularDilucao } from './diluicao.js';
 
+    // Exemplo de uso da função modular
+    const resultado = calcularDilucao(500, 20, 40.00);
+    console.log("Custo calculado pelo módulo:", resultado.custoUso);
+</script>
 </body>
 </html>
