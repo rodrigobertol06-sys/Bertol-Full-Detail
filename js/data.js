@@ -32,4 +32,36 @@ function carregarDadosPlanilha() {
             console.error('Erro ao carregar dados:', erro);
             corpo.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-red-600">Erro ao carregar dados da planilha.</td></tr>`;
         });
+    // 018. Função para carregar as filiais na tela Home ao abrir o site
+function carregarFiliaisHome() {
+    const corpoFiliais = document.getElementById('tabela-filiais-corpo');
+    if (!corpoFiliais) return;
+
+    fetch(`${URL_WEB_APP}?acao=carregarFiliais`)
+        .then(res => res.json())
+        .then(filiais => {
+            if (!filiais || filiais.length === 0) {
+                corpoFiliais.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">Nenhuma filial cadastrada.</td></tr>`;
+                return;
+            }
+
+            corpoFiliais.innerHTML = filiais.map(f => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3 font-bold text-[#300c07]">${f.tipo}</td>
+                    <td class="p-3 text-slate-600">${f.endereco}</td>
+                    <td class="p-3 text-slate-600">${f.cidadeUF}</td>
+                    <td class="p-3 text-slate-600">${f.telefone}</td>
+                </tr>
+            `).join('');
+        })
+        .catch(err => {
+            console.error('Erro ao carregar filiais:', err);
+            corpoFiliais.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-red-500">Erro ao carregar os dados das filiais.</td></tr>`;
+        });
+}
+
+// Dispara o carregamento das filiais ao abrir a página
+window.addEventListener('DOMContentLoaded', () => {
+    carregarFiliaisHome();
+});
 }
