@@ -4,19 +4,29 @@ const URL_WEB_APP = "https://script.google.com/macros/s/AKfycbzKs_U5cHE-r3hd3iIR
 let usuarioLogado = null;
 let setorAtivo = '';
 
-// 011. Função que executa a validação de usuário e senha na aba Configurações
+// 011. Função que executa a validação de usuário e senha com feedback de carregamento
 function realizarLogin() {
     const usuarioInput = document.getElementById('usuario-input').value.trim();
     const senhaInput = document.getElementById('senha-input').value.trim();
+    const btnEntrar = document.querySelector('#modal-login button[onclick="realizarLogin()"]');
 
     if(!usuarioInput || !senhaInput) {
         alert('Por favor, preencha o usuário e a senha.');
         return;
     }
 
+    // Feedback visual imediato de carregamento
+    const textoOriginal = btnEntrar.innerHTML;
+    btnEntrar.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Carregando...';
+    btnEntrar.disabled = true;
+
     fetch(`${URL_WEB_APP}?acao=carregarUsuarios`)
         .then(res => res.json())
         .then(usuarios => {
+            // Restaura o botão
+            btnEntrar.innerHTML = textoOriginal;
+            btnEntrar.disabled = false;
+
             const encontrado = usuarios.find(u => u.usuario.toLowerCase() === usuarioInput.toLowerCase() && u.senha === senhaInput);
             if (!encontrado) {
                 alert('Usuário ou senha incorretos!');
@@ -29,7 +39,6 @@ function realizarLogin() {
             document.getElementById('info-usuario-logado').innerText = `${usuarioLogado.usuario} (${usuarioLogado.nivel} - ${usuarioLogado.setor})`;
             document.getElementById('texto-botao-login').innerText = 'Trocar Usuário';
 
-            // Alterna da tela home para a tela de dados
             document.getElementById('tela-home').classList.add('hidden');
             document.getElementById('tela-dados').classList.remove('hidden');
 
@@ -38,6 +47,9 @@ function realizarLogin() {
         })
         .catch(err => {
             console.error('Erro no login:', err);
+            // Restaura o botão em caso de erro
+            btnEntrar.innerHTML = textoOriginal;
+            btnEntrar.disabled = false;
             alert('Erro ao conectar com a planilha de configurações.');
         });
 }
