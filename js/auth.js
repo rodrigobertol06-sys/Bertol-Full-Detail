@@ -3,7 +3,7 @@ const URL_WEB_APP = "https://script.google.com/macros/s/AKfycbzKs_U5cHE-r3hd3iIR
 
 let usuarioLogado = null;
 let setorAtivo = '';
-window.listaGlobalUsuarios = []; // Garante que a variável global existe
+window.listaGlobalUsuarios = []; 
 
 // Ao carregar a página, verifica se já há sessão salva
 window.addEventListener('DOMContentLoaded', () => {
@@ -16,7 +16,6 @@ window.addEventListener('DOMContentLoaded', () => {
         
         ativarMenuLateral(true);
 
-        // Busca os usuários em background para alimentar a lista global mesmo com sessão salva
         fetch(`${URL_WEB_APP}?acao=carregarUsuarios`)
             .then(res => res.json())
             .then(usuarios => {
@@ -47,7 +46,7 @@ function realizarLogin() {
         .then(usuarios => {
             btnEntrar.innerHTML = textoOriginal;
             btnEntrar.disabled = false;
-            window.listaGlobalUsuarios = usuarios; // Salva globalmente no login
+            window.listaGlobalUsuarios = usuarios;
 
             const encontrado = usuarios.find(u => u.usuario.toLowerCase() === usuarioInput.toLowerCase() && u.senha === senhaInput);
             if (!encontrado) {
@@ -77,11 +76,11 @@ function realizarLogin() {
         });
 }
 
-// 012. Configuração visual por Nível de Acesso
+// 012. Configuração visual por Nível de Acesso ou Setor Sistema
 function configurarInterfacePorAcesso() {
     const containerSetores = document.getElementById('secao-setores-container');
     
-    if (usuarioLogado && usuarioLogado.nivel.toLowerCase() === 'senior') {
+    if (usuarioLogado && (usuarioLogado.nivel.toLowerCase() === 'senior' || usuarioLogado.setor.toLowerCase() === 'sistema')) {
         containerSetores.classList.remove('hidden');
         
         if (typeof carregarMiniCardsSetores === 'function') {
@@ -118,14 +117,13 @@ window.addEventListener('keydown', function(event) {
     }
 });
 
-// Ativa ou desativa a exibição da barra lateral e do botão de hambúrguer
 function ativarMenuLateral(ativar) {
     const sidebar = document.getElementById('sidebar-sistema');
     const btnMenu = document.getElementById('btnMenu');
     if (ativar) {
         sidebar.classList.remove('hidden');
         sidebar.classList.add('flex');
-        btnMenu.classList.remove('hidden'); // Mostra o botão hambúrguer no cabeçalho
+        btnMenu.classList.remove('hidden');
     } else {
         sidebar.classList.add('hidden');
         sidebar.classList.remove('flex');
@@ -133,7 +131,6 @@ function ativarMenuLateral(ativar) {
     }
 }
 
-// Função para abrir/fechar o menu lateral clicando no botão do cabeçalho
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar-sistema');
     if (sidebar.classList.contains('hidden')) {
@@ -145,13 +142,11 @@ function toggleSidebar() {
     }
 }
 
-// Navegação entre as telas internas
 function mudarParaTela(tela) {
     if (tela === 'home') {
         document.getElementById('tela-home').classList.remove('hidden');
         document.getElementById('tela-dados').classList.add('hidden');
     } else if (tela === 'dados') {
-        // Só permite ir para os dados se estiver logado
         if (!usuarioLogado) {
             alert('Por favor, faça o login primeiro.');
             abrirModalLogin();
@@ -161,6 +156,7 @@ function mudarParaTela(tela) {
         document.getElementById('tela-dados').classList.remove('hidden');
     }
 }
+
 // 027. Função auxiliar para validar hierarquia e permissão global do setor Sistema
 function filtrarUsuariosPorHierarquia(listaUsuarios, logado) {
     if (!logado) return [];
@@ -180,7 +176,6 @@ function filtrarUsuariosPorHierarquia(listaUsuarios, logado) {
             return true; 
         }
 
-        // Deve pertencer ao mesmo setor obrigatoriamente
         if (setorUser !== setorLogado) {
             return false;
         }
