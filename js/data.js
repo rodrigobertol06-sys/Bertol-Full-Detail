@@ -66,3 +66,87 @@ function carregarFiliaisHome() {
 window.addEventListener('DOMContentLoaded', () => {
     carregarFiliaisHome();
 });
+// Exemplo de lista de usuários do setor de vendas (você pode puxar dinamicamente da sua tabela de login)
+const usuariosVendas = ["Felipe", "Natanael", "Nicole", "Aline", "Ester", "Gabrieli", "Thamiris", "Karen"];
+let usuarioFiltroAtivo = null;
+
+function carregarMiniCardsSetores() {
+    const container = document.getElementById('container-mini-cards');
+    if (!container) return;
+
+    fetch(`${URL_WEB_APP}?acao=obterSetores`)
+        .then(res => res.json())
+        .then(setores => {
+            if (!setores || setores.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500">Nenhum setor cadastrado na coluna Q.</p>`;
+                return;
+            }
+
+            container.innerHTML = setores.map(setor => {
+                const ativo = setorAtivo === setor;
+                // Estilo dinâmico para destacar o card selecionado (igual ao da sua imagem)
+                const classeBorda = ativo ? 'border-2 border-slate-900 shadow-sm' : 'border border-slate-200 hover:border-slate-300';
+
+                return `
+                    <div onclick="selecionarSetorCard('${setor}')" class="bg-white rounded-xl p-4 cursor-pointer transition-all ${classeBorda}">
+                        <div class="text-sm font-bold text-slate-800">Setor: ${setor}</div>
+                        <div class="text-xs text-slate-500 mt-1">${usuarioLogado?.nivel === 'Senior' ? 'Acesso Master' : 'Acesso Setorial'}</div>
+                    </div>
+                `;
+            }).join('');
+        })
+        .catch(err => console.error('Erro ao carregar setores:', err));
+}
+
+function selecionarSetorCard(setor) {
+    setorAtivo = setor;
+    carregarMiniCardsSetores(); // Atualiza os estilos dos cards
+    verificarFiltroVendas();
+    
+    // Se houver uma função que recarrega a tabela de dados, chame-a aqui:
+    if (typeof carregarDadosPlanilha === 'function') {
+        carregarDadosPlanilha();
+    }
+}
+
+function verificarFiltroVendas() {
+    const painelVendas = document.getElementById('painel-filtro-vendas');
+    const containerPilulas = document.getElementById('container-pilulas-usuarios');
+    
+    if (!painelVendas || !containerPilulas) return;
+
+    // Se o setor ativo for Vendas, exibe as pílulas dos usuários
+    if (setorAtivo && setorAtivo.toLowerCase() === 'vendas') {
+        painelVendas.classList.remove('hidden');
+        
+        // Renderiza o botão "Todos" + um filtro em pílula para cada usuário de vendas
+        let htmlPilulas = `
+            <button onclick="filtrarPorUsuarioVendas(null)" class="px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${usuarioFiltroAtivo === null ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                Todos
+            </button>
+        `;
+
+        htmlPilulas += usuariosVendas.map(user => {
+            const selecionado = usuarioFiltroAtivo === user;
+            const classePilula = selecionado ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200';
+            return `
+                <button onclick="filtrarPorUsuarioVendas('${user}')" class="px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${classePilula}">
+                    ${user}
+                </button>
+            `;
+        }).join('');
+
+        containerPilulas.innerHTML = htmlPilulas;
+    } else {
+        painelVendas.classList.add('hidden');
+        usuarioFiltroAtivo = null;
+    }
+}
+
+function filtrarPorUsuarioVendas(usuario) {
+    usuarioFiltroAtivo = usuario;
+    verificarFiltroVendas(); // Atualiza o visual das pílulas
+    
+    // Aqui você integrará a lógica futura para filtrar as atividades do usuário selecionado nas tabelas
+    console.log(`Filtrando atividades para o usuário de vendas: ${usuario || 'Todos'}`);
+}
