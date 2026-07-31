@@ -32,7 +32,9 @@ function carregarDadosPlanilha() {
             console.error('Erro ao carregar dados:', erro);
             corpo.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-red-600">Erro ao carregar dados da planilha.</td></tr>`;
         });
-    // 018. Função para carregar as filiais na tela Home ao abrir o site
+}
+
+// 018. Função para carregar as filiais na tela Home ao abrir o site
 function carregarFiliaisHome() {
     const corpoFiliais = document.getElementById('tabela-filiais-corpo');
     if (!corpoFiliais) return;
@@ -64,4 +66,3 @@ function carregarFiliaisHome() {
 window.addEventListener('DOMContentLoaded', () => {
     carregarFiliaisHome();
 });
-}
