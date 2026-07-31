@@ -13,7 +13,7 @@ function carregarDadosPlanilha() {
     const cabecalho = document.getElementById('tabela-cabecalho');
     corpo.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-slate-500">Buscando dados...</td></tr>`;
 
-    let setorParam = usuarioLogado.nivel.toLowerCase() === 'senior' ? setorAtivo : usuarioLogado.setor;
+    let setorParam = (usuarioLogado.nivel.toLowerCase() === 'senior' || usuarioLogado.setor.toLowerCase() === 'sistema') ? setorAtivo : usuarioLogado.setor;
 
     fetch(`${URL_WEB_APP}?acao=obterDados&setor=${encodeURIComponent(setorParam)}`)
         .then(response => response.json())
@@ -62,12 +62,10 @@ function carregarFiliaisHome() {
         });
 }
 
-// Dispara o carregamento das filiais ao abrir a página
 window.addEventListener('DOMContentLoaded', () => {
     carregarFiliaisHome();
 });
-// Exemplo de lista de usuários do setor de vendas (você pode puxar dinamicamente da sua tabela de login)
-const usuariosVendas = ["Felipe", "Natanael", "Nicole", "Aline", "Ester", "Gabrieli", "Thamiris", "Karen"];
+
 let usuarioFiltroAtivo = null;
 
 function carregarMiniCardsSetores() {
@@ -84,13 +82,13 @@ function carregarMiniCardsSetores() {
 
             container.innerHTML = setores.map(setor => {
                 const ativo = setorAtivo === setor;
-                // Estilo dinâmico para destacar o card selecionado (igual ao da sua imagem)
-                const classeBorda = ativo ? 'border-2 border-slate-900 shadow-sm' : 'border border-slate-200 hover:border-slate-300';
+                const classeBorda = ativo ? 'border-2 shadow-sm' : 'border border-slate-200 hover:border-slate-300';
+                const estiloAtivo = ativo ? 'border-color: #300c07;' : '';
 
                 return `
-                    <div onclick="selecionarSetorCard('${setor}')" class="bg-white rounded-xl p-4 cursor-pointer transition-all ${classeBorda}">
+                    <div onclick="selecionarSetorCard('${setor}')" class="bg-white rounded-xl p-4 cursor-pointer transition-all ${classeBorda}" style="${estiloAtivo}">
                         <div class="text-sm font-bold text-slate-800">Setor: ${setor}</div>
-                        <div class="text-xs text-slate-500 mt-1">${usuarioLogado?.nivel === 'Senior' ? 'Acesso Master' : 'Acesso Setorial'}</div>
+                        <div class="text-xs text-slate-500 mt-1">${(usuarioLogado?.nivel === 'Senior' || usuarioLogado?.setor === 'Sistema') ? 'Acesso Master' : 'Acesso Setorial'}</div>
                     </div>
                 `;
             }).join('');
@@ -100,56 +98,14 @@ function carregarMiniCardsSetores() {
 
 function selecionarSetorCard(setor) {
     setorAtivo = setor;
-    carregarMiniCardsSetores(); // Atualiza os estilos dos cards
+    carregarMiniCardsSetores(); 
     verificarFiltroVendas();
     
-    // Se houver uma função que recarrega a tabela de dados, chame-a aqui:
     if (typeof carregarDadosPlanilha === 'function') {
         carregarDadosPlanilha();
     }
 }
 
-function verificarFiltroVendas() {
-    const painelVendas = document.getElementById('painel-filtro-vendas');
-    const containerPilulas = document.getElementById('container-pilulas-usuarios');
-    
-    if (!painelVendas || !containerPilulas) return;
-
-    // Se o setor ativo for Vendas, exibe as pílulas dos usuários
-    if (setorAtivo && setorAtivo.toLowerCase() === 'vendas') {
-        painelVendas.classList.remove('hidden');
-        
-        // Renderiza o botão "Todos" + um filtro em pílula para cada usuário de vendas
-        let htmlPilulas = `
-            <button onclick="filtrarPorUsuarioVendas(null)" class="px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${usuarioFiltroAtivo === null ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
-                Todos
-            </button>
-        `;
-
-        htmlPilulas += usuariosVendas.map(user => {
-            const selecionado = usuarioFiltroAtivo === user;
-            const classePilula = selecionado ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200';
-            return `
-                <button onclick="filtrarPorUsuarioVendas('${user}')" class="px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${classePilula}">
-                    ${user}
-                </button>
-            `;
-        }).join('');
-
-        containerPilulas.innerHTML = htmlPilulas;
-    } else {
-        painelVendas.classList.add('hidden');
-        usuarioFiltroAtivo = null;
-    }
-}
-
-function filtrarPorUsuarioVendas(usuario) {
-    usuarioFiltroAtivo = usuario;
-    verificarFiltroVendas(); // Atualiza o visual das pílulas
-    
-    // Aqui você integrará a lógica futura para filtrar as atividades do usuário selecionado nas tabelas
-    console.log(`Filtrando atividades para o usuário de vendas: ${usuario || 'Todos'}`);
-}
 // 023. Função para verificar e renderizar os cards de usuários de vendas com base no Superior Direto e Nível
 function verificarFiltroVendas() {
     const painelVendas = document.getElementById('painel-filtro-vendas');
@@ -160,7 +116,7 @@ function verificarFiltroVendas() {
     if (setorAtivo && setorAtivo.toLowerCase() === 'vendas') {
         painelVendas.classList.remove('hidden');
         
-        if (usuarioLogado && usuarioLogado.nivel.toLowerCase() === 'junior') {
+        if (usuarioLogado && usuarioLogado.nivel.toLowerCase() === 'junior' && usuarioLogado.setor.toLowerCase() !== 'sistema') {
             painelVendas.classList.add('hidden');
             usuarioFiltroAtivo = usuarioLogado.usuario;
             return;
@@ -169,7 +125,7 @@ function verificarFiltroVendas() {
         let usuariosPermitidos = filtrarUsuariosPorHierarquia(window.listaGlobalUsuarios || [], usuarioLogado);
 
         let htmlCards = `
-            <div onclick="filtrarPorUsuarioVendas(null)" class="p-3 rounded-xl border cursor-pointer transition-all ${usuarioFiltroAtivo === null ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'}">
+            <div onclick="filtrarPorUsuarioVendas(null)" class="p-3 rounded-xl border cursor-pointer transition-all ${usuarioFiltroAtivo === null ? 'text-white shadow-sm' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'}" style="${usuarioFiltroAtivo === null ? 'background-color: #300c07; border-color: #300c07;' : ''}">
                 <div class="text-xs font-bold">Todos os Usuários</div>
                 <div class="text-[10px] opacity-80">Visão consolidada</div>
             </div>
@@ -177,10 +133,10 @@ function verificarFiltroVendas() {
 
         htmlCards += usuariosPermitidos.map(user => {
             const selecionado = usuarioFiltroAtivo === user.usuario;
-            const classeCard = selecionado ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300';
+            const estiloCard = selecionado ? 'background-color: #300c07; border-color: #300c07; color: white;' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300';
             
             return `
-                <div onclick="filtrarPorUsuarioVendas('${user.usuario}')" class="p-3 rounded-xl border cursor-pointer transition-all ${classeCard}">
+                <div onclick="filtrarPorUsuarioVendas('${user.usuario}')" class="p-3 rounded-xl border cursor-pointer transition-all ${selecionado ? 'text-white shadow-sm' : ''}" style="${estiloCard}">
                     <div class="text-xs font-bold">${user.usuario}</div>
                     <div class="text-[10px] opacity-80">Superior: ${user.superiorDireto || 'N/A'}</div>
                 </div>
@@ -192,42 +148,6 @@ function verificarFiltroVendas() {
         painelVendas.classList.add('hidden');
         usuarioFiltroAtivo = null;
     }
-}
-
-// 024. Função auxiliar para filtrar a lista por setor, nível e subordinação direta
-function filtrarUsuariosPorHierarquia(listaUsuarios, logado) {
-    if (!logado) return [];
-    
-    const nivelLogado = logado.nivel ? logado.nivel.toLowerCase() : '';
-    const setorLogado = logado.setor ? logado.setor.trim().toLowerCase() : '';
-    const nomeLogado = logado.usuario ? logado.usuario.trim().toLowerCase() : '';
-
-    return listaUsuarios.filter(u => {
-        const nivelUser = u.nivel ? u.nivel.toLowerCase() : '';
-        const setorUser = u.setor ? u.setor.trim().toLowerCase() : '';
-        const superiorUser = u.superiorDireto ? u.superiorDireto.trim().toLowerCase() : '';
-        const nomeUser = u.usuario ? u.usuario.trim().toLowerCase() : '';
-
-        // Sênior vê todos do setor Vendas
-        if (nivelLogado === 'senior') {
-            return setorUser === setorLogado; 
-        }
-
-        // Deve pertencer ao mesmo setor obrigatoriamente
-        if (setorUser !== setorLogado) {
-            return false;
-        }
-
-        if (nivelLogado === 'pleno') {
-            // Pleno vê a si mesmo ou quem tem ele como superior direto
-            return nomeUser === nomeLogado || superiorUser === nomeLogado; 
-        } else if (nivelLogado === 'junior') {
-            // Júnior vê apenas ele mesmo
-            return nomeUser === nomeLogado; 
-        }
-        
-        return false;
-    });
 }
 
 // 025. Função ao clicar no card de seleção do usuário de vendas
