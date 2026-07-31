@@ -1,8 +1,9 @@
-// 010. Módulo de Autenticação e Gestão de Sessão (Login e Permissões)
+// 010. Módulo de Autenticação e Sessão
 const URL_WEB_APP = "https://script.google.com/macros/s/AKfycbzKs_U5cHE-r3hd3iIRFKiM0TR_JpTf7b6DAyLzRS8506sMWV3o83ir0_rymNIAIeEN/exec"; 
 
 let usuarioLogado = null;
 let setorAtivo = '';
+window.listaGlobalUsuarios = []; // Garante que a variável global existe
 
 // Ao carregar a página, verifica se já há sessão salva
 window.addEventListener('DOMContentLoaded', () => {
@@ -14,7 +15,15 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('texto-botao-login').innerText = 'Trocar Usuário';
         
         ativarMenuLateral(true);
-        configurarInterfacePorAcesso();
+
+        // Busca os usuários em background para alimentar a lista global mesmo com sessão salva
+        fetch(`${URL_WEB_APP}?acao=carregarUsuarios`)
+            .then(res => res.json())
+            .then(usuarios => {
+                window.listaGlobalUsuarios = usuarios;
+                configurarInterfacePorAcesso();
+            })
+            .catch(err => console.error('Erro ao carregar usuários da sessão:', err));
     }
 });
 
@@ -34,13 +43,11 @@ function realizarLogin() {
     btnEntrar.disabled = true;
 
     fetch(`${URL_WEB_APP}?acao=carregarUsuarios`)
-        .then(res => {
-            if (!res.ok) throw new Error('Erro na rede do Apps Script');
-            return res.json();
-        })
+        .then(res => res.json())
         .then(usuarios => {
             btnEntrar.innerHTML = textoOriginal;
             btnEntrar.disabled = false;
+            window.listaGlobalUsuarios = usuarios; // Salva globalmente no login
 
             const encontrado = usuarios.find(u => u.usuario.toLowerCase() === usuarioInput.toLowerCase() && u.senha === senhaInput);
             if (!encontrado) {
@@ -66,7 +73,7 @@ function realizarLogin() {
             console.error('Erro no login:', err);
             btnEntrar.innerHTML = textoOriginal;
             btnEntrar.disabled = false;
-            alert('Erro ao conectar com a planilha de configurações. Verifique a implantação do Apps Script.');
+            alert('Erro ao conectar com a planilha de configurações.');
         });
 }
 
