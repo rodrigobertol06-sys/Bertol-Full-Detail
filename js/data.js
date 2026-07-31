@@ -150,3 +150,76 @@ function filtrarPorUsuarioVendas(usuario) {
     // Aqui você integrará a lógica futura para filtrar as atividades do usuário selecionado nas tabelas
     console.log(`Filtrando atividades para o usuário de vendas: ${usuario || 'Todos'}`);
 }
+// 023. Função para verificar e renderizar os cards de usuários de vendas com base na hierarquia
+function verificarFiltroVendas() {
+    const painelVendas = document.getElementById('painel-filtro-vendas');
+    const containerCardsUsuarios = document.getElementById('container-pilulas-usuarios'); // Mantido o ID ou renomeado para o container de cards
+    
+    if (!painelVendas || !containerCardsUsuarios) return;
+
+    // Se o setor ativo for Vendas, exibe o painel
+    if (setorAtivo && setorAtivo.toLowerCase() === 'vendas') {
+        painelVendas.classList.remove('hidden');
+        
+        // Define quais usuários o usuário logado pode visualizar com base na regra hierárquica:
+        // - Júnior: vê apenas a si mesmo
+        // - Pleno: vê a si mesmo e os Júnior
+        // - Sênior: vê todos (Júnior, Pleno e Sênior)
+        let usuariosPermitidos = filtrarUsuariosPorHierarquia(usuariosVendas, usuarioLogado);
+
+        let htmlCards = `
+            <div onclick="filtrarPorUsuarioVendas(null)" class="p-3 rounded-xl border cursor-pointer transition-all ${usuarioFiltroAtivo === null ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'}">
+                <div class="text-xs font-bold">Todos os Usuários</div>
+                <div class="text-[10px] opacity-80">Visão consolidada</div>
+            </div>
+        `;
+
+        htmlCards += usuariosPermitidos.map(user => {
+            const selecionado = usuarioFiltroAtivo === user.nome;
+            const classeCard = selecionado ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300';
+            
+            return `
+                <div onclick="filtrarPorUsuarioVendas('${user.nome}')" class="p-3 rounded-xl border cursor-pointer transition-all ${classeCard}">
+                    <div class="text-xs font-bold">${user.nome}</div>
+                    <div class="text-[10px] opacity-80">Nível: ${user.nivel}</div>
+                </div>
+            `;
+        }).join('');
+
+        containerCardsUsuarios.innerHTML = htmlCards;
+    } else {
+        painelVendas.classList.add('hidden');
+        usuarioFiltroAtivo = null;
+    }
+}
+
+// 024. Função auxiliar para filtrar a lista de usuários de acordo com o nível de acesso logado
+function filtrarUsuariosPorHierarquia(listaUsuarios, logado) {
+    if (!logado) return [];
+    
+    const nivelLogado = logado.nivel ? logado.nivel.toLowerCase() : '';
+
+    return listaUsuarios.filter(u => {
+        const nivelUser = u.nivel ? u.nivel.toLowerCase() : '';
+
+        if (nivelLogado === 'senior') {
+            return true; // Sênior vê todo mundo
+        } else if (nivelLogado === 'pleno') {
+            return nivelUser === 'pleno' || nivelUser === 'junior'; // Pleno vê Pleno e Júnior
+        } else if (nivelLogado === 'junior') {
+            return u.nome.toLowerCase() === logado.usuario.toLowerCase(); // Júnior vê apenas ele mesmo
+        }
+        return false;
+    });
+}
+
+// 025. Função ao clicar no card de seleção do usuário de vendas
+function filtrarPorUsuarioVendas(usuario) {
+    usuarioFiltroAtivo = usuario;
+    verificarFiltroVendas(); 
+    
+    console.log(`Filtrando atividades para o usuário: ${usuario || 'Todos'}`);
+    if (typeof carregarDadosPlanilha === 'function') {
+        carregarDadosPlanilha();
+    }
+}
