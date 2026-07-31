@@ -64,6 +64,7 @@ function carregarFiliaisHome() {
 
 window.addEventListener('DOMContentLoaded', () => {
     carregarFiliaisHome();
+    carregarOpcoesConfiguracao();
 });
 
 let usuarioFiltroAtivo = null;
@@ -125,7 +126,7 @@ function verificarFiltroVendas() {
         let usuariosPermitidos = filtrarUsuariosPorHierarquia(window.listaGlobalUsuarios || [], usuarioLogado);
 
         let htmlCards = `
-            <div onclick="filtrarPorUsuarioVendas(null)" class="p-3 rounded-xl border cursor-pointer transition-all ${usuarioFiltroAtivo === null ? 'text-white shadow-sm' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'}" style="${usuarioFiltroAtivo === null ? 'background-color: #300c07; border-color: #300c07;' : ''}">
+            <div onclick="selecionarColaboradorVendas(null)" class="p-3 rounded-xl border cursor-pointer transition-all ${usuarioFiltroAtivo === null ? 'text-white shadow-sm' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'}" style="${usuarioFiltroAtivo === null ? 'background-color: #300c07; border-color: #300c07;' : ''}">
                 <div class="text-xs font-bold">Todos os Usuários</div>
                 <div class="text-[10px] opacity-80">Visão consolidada</div>
             </div>
@@ -136,7 +137,7 @@ function verificarFiltroVendas() {
             const estiloCard = selecionado ? 'background-color: #300c07; border-color: #300c07; color: white;' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300';
             
             return `
-                <div onclick="filtrarPorUsuarioVendas('${user.usuario}')" class="p-3 rounded-xl border cursor-pointer transition-all ${selecionado ? 'text-white shadow-sm' : ''}" style="${estiloCard}">
+                <div onclick="selecionarColaboradorVendas('${user.usuario}')" class="p-3 rounded-xl border cursor-pointer transition-all ${selecionado ? 'text-white shadow-sm' : ''}" style="${estiloCard}">
                     <div class="text-xs font-bold">${user.usuario}</div>
                     <div class="text-[10px] opacity-80">Superior: ${user.superiorDireto || 'N/A'}</div>
                 </div>
@@ -147,47 +148,127 @@ function verificarFiltroVendas() {
     } else {
         painelVendas.classList.add('hidden');
         usuarioFiltroAtivo = null;
+        const painelRegistro = document.getElementById('painel-registro-vendedor');
+        if (painelRegistro) painelRegistro.classList.add('hidden');
     }
 }
 
-// 025. Função ao clicar no card de seleção do usuário de vendas
-function filtrarPorUsuarioVendas(usuario) {
-    usuarioFiltroAtivo = usuario;
-    verificarFiltroVendas(); 
-    
-    if (typeof carregarDadosPlanilha === 'function') {
-        carregarDadosPlanilha();
-    }
+// 030. Lógica de Envio do Formulário de Registro de Vendedores
+document.addEventListener('DOMContentLoaded', () => {
+    const formRegistro = document.getElementById('form-registro-vendedor');
+    if (!formRegistro) return;
+
+    formRegistro.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const btnSubmit = formRegistro.querySelector('button[type="submit"]');
+        const textoOriginal = btnSubmit.innerHTML;
+        btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Salvando...';
+        btnSubmit.disabled = true;
+
+        const vendedorNome = window.usuarioLogado ? window.usuarioLogado.usuario : 'Desconhecido';
+
+        const dadosRegistro = {
+            acao: 'salvarRegistroVendedor',
+            nomeCliente: document.getElementById('nome-cliente').value.trim(),
+            nroTelefone: document.getElementById('tel-cliente').value.trim(),
+            status: document.getElementById('status-cliente').value,
+            registroStatusAtual: document.getElementById('reg-status-atual').value.trim(),
+            vendedor: vendedorNome,
+            tipoBeneficio: document.getElementById('tipo-beneficio').value,
+            filial: document.getElementById('filial').value,
+            tagAnuncio: document.getElementById('tag-anuncio').value.trim(),
+            grupoWhats: document.getElementById('grupo-whats').value,
+            auxDoenca: document.getElementById('aux-doenca').value,
+            roboAtivou: document.getElementById('robo-ativou').value.trim()
+        };
+
+        try {
+            const resposta = await fetch(URL_WEB_APP, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                },
+                body: JSON.stringify(dadosRegistro)
+            });
+
+            const resultado = await resposta.json();
+
+            if (resultado.sucesso) {
+                alert('Registro salvo com sucesso na aba Registros_vendedores!');
+                formRegistro.reset();
+                if (typeof carregarDadosPlanilha === 'function') {
+                    carregarDadosPlanilha();
+                }
+            } else {
+                alert('Erro ao salvar: ' + (resultado.mensagem || 'Erro desconhecido.'));
+            }
+        } catch (erro) {
+            console.error('Erro na requisição:', erro);
+            alert('Erro de conexão ao tentar salvar o registro.');
+        } finally {
+            btnSubmit.innerHTML = textoOriginal;
+            btnSubmit.disabled = false;
+        }
+    });
+});
+
+// 031. Função para buscar os dados das colunas de Configurações e preencher os selects
+function carregarOpcoesConfiguracao() {
+    fetch(`${URL_WEB_APP}?acao=carregarConfiguracoesValidacao`)
+        .then(res => res.json())
+        .then(data => {
+            const selectStatus = document.getElementById('status-cliente');
+            if (selectStatus && data.statusList) {
+                selectStatus.innerHTML = '<option value="">Selecione o Status...</option>' + 
+                    data.statusList.map(item => `<option value="${item}">${item}</option>`).join('');
+            }
+
+            const selectBeneficio = document.getElementById('tipo-beneficio');
+            if (selectBeneficio && data.beneficiosList) {
+                selectBeneficio.innerHTML = '<option value="">Selecione o benefício...</option>' + 
+                    data.beneficiosList.map(item => `<option value="${item}">${item}</option>`).join('');
+            }
+
+            const selectFilial = document.getElementById('filial');
+            if (selectFilial && data.filiaisList) {
+                selectFilial.innerHTML = '<option value="">Selecione a filial...</option>' + 
+                    data.filiaisList.map(item => `<option value="${item}">${item}</option>`).join('');
+            }
+        })
+        .catch(err => console.error('Erro ao carregar validações de configuração:', err));
 }
+
 // 032. Função de Seleção de Colaborador (Exibe Histórico e Formulário de Registro)
 function selecionarColaboradorVendas(nomeColaborador) {
+    usuarioFiltroAtivo = nomeColaborador;
+    verificarFiltroVendas();
+
     const painelRegistro = document.getElementById('painel-registro-vendedor');
     const tituloPainelDados = document.getElementById('titulo-painel-dados');
     
-    // Se clicou em "Todos os Usuários" ou visão consolidada
-    if (!nomeColaborador || nomeColaborador === 'Todos') {
+    if (!nomeColaborador) {
         if (painelRegistro) {
-            painelRegistro.classList.add('hidden'); // Oculta o formulário de registro na visão geral
+            painelRegistro.classList.add('hidden');
         }
         if (tituloPainelDados) {
             tituloPainelDados.textContent = 'Dados Sincronizados (Visão Consolidada)';
         }
-        // Aqui entra a sua lógica existente para carregar todos os dados...
+        if (typeof carregarDadosPlanilha === 'function') {
+            carregarDadosPlanilha();
+        }
         return;
     }
 
-    // Se clicou em um colaborador específico (ex: Nicole)
     if (painelRegistro) {
-        painelRegistro.classList.remove('hidden'); // MOSTRA o card de registro de vendas!
+        painelRegistro.classList.remove('hidden');
     }
 
     if (tituloPainelDados) {
         tituloPainelDados.textContent = `Histórico de Atividades / Acompanhamento: ${nomeColaborador}`;
     }
 
-    // Filtra os dados da tabela para mostrar apenas o histórico deste colaborador
-    if (typeof filtrarDadosPorUsuario === 'function') {
-        filtrarDadosPorUsuario(nomeColaborador);
+    if (typeof carregarDadosPlanilha === 'function') {
+        carregarDadosPlanilha();
     }
 }
-
