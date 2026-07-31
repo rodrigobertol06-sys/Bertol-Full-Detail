@@ -15,7 +15,19 @@ function carregarDadosPlanilha() {
 
     let setorParam = (usuarioLogado.nivel.toLowerCase() === 'senior' || usuarioLogado.setor.toLowerCase() === 'sistema') ? setorAtivo : usuarioLogado.setor;
 
-    fetch(`${URL_WEB_APP}?acao=obterDados&setor=${encodeURIComponent(setorParam)}`)
+    // Garante que se for Júnior, o filtro de usuário seja estritamente o próprio usuário logado
+    let usuarioParam = usuarioFiltroAtivo;
+    if (usuarioLogado.nivel.toLowerCase() === 'junior' && usuarioLogado.setor.toLowerCase() !== 'sistema') {
+        usuarioParam = usuarioLogado.usuario;
+    }
+
+    // Monta a URL passando o setor e também o usuário filtrado (se houver)
+    let urlCompleta = `${URL_WEB_APP}?acao=obterDados&setor=${encodeURIComponent(setorParam)}`;
+    if (usuarioParam) {
+        urlCompleta += `&usuario=${encodeURIComponent(usuarioParam)}`;
+    }
+
+    fetch(urlCompleta)
         .then(response => response.json())
         .then(dados => {
             if (!dados || dados.length === 0) {
