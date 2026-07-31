@@ -150,7 +150,7 @@ function filtrarPorUsuarioVendas(usuario) {
     // Aqui você integrará a lógica futura para filtrar as atividades do usuário selecionado nas tabelas
     console.log(`Filtrando atividades para o usuário de vendas: ${usuario || 'Todos'}`);
 }
-// 023. Função para verificar e renderizar os cards de usuários de vendas com base na hierarquia
+// 023. Função para verificar e renderizar os cards de usuários de vendas com base no Superior Direto e Nível
 function verificarFiltroVendas() {
     const painelVendas = document.getElementById('painel-filtro-vendas');
     const containerCardsUsuarios = document.getElementById('container-pilulas-usuarios');
@@ -160,14 +160,12 @@ function verificarFiltroVendas() {
     if (setorAtivo && setorAtivo.toLowerCase() === 'vendas') {
         painelVendas.classList.remove('hidden');
         
-        // Se for Junior, nem exibimos o painel de seleção de outros usuários, ou travamos nele mesmo
         if (usuarioLogado && usuarioLogado.nivel.toLowerCase() === 'junior') {
-            painelVendas.classList.add('hidden'); // Júnior não filtra os outros, apenas vê os seus dados direto
+            painelVendas.classList.add('hidden');
             usuarioFiltroAtivo = usuarioLogado.usuario;
             return;
         }
 
-        // Busca os usuários permitidos conforme a hierarquia (Sênior ou Pleno)
         let usuariosPermitidos = filtrarUsuariosPorHierarquia(window.listaGlobalUsuarios || [], usuarioLogado);
 
         let htmlCards = `
@@ -184,7 +182,7 @@ function verificarFiltroVendas() {
             return `
                 <div onclick="filtrarPorUsuarioVendas('${user.usuario}')" class="p-3 rounded-xl border cursor-pointer transition-all ${classeCard}">
                     <div class="text-xs font-bold">${user.usuario}</div>
-                    <div class="text-[10px] opacity-80">Nível: ${user.nivel}</div>
+                    <div class="text-[10px] opacity-80">Superior: ${user.superiorDireto || 'N/A'}</div>
                 </div>
             `;
         }).join('');
@@ -196,33 +194,36 @@ function verificarFiltroVendas() {
     }
 }
 
-// 024. Função auxiliar para filtrar a lista de usuários por nível hierárquico e pelo mesmo setor
+// 024. Função auxiliar para filtrar a lista por setor, nível e subordinação direta
 function filtrarUsuariosPorHierarquia(listaUsuarios, logado) {
     if (!logado) return [];
     
     const nivelLogado = logado.nivel ? logado.nivel.toLowerCase() : '';
     const setorLogado = logado.setor ? logado.setor.trim().toLowerCase() : '';
+    const nomeLogado = logado.usuario ? logado.usuario.trim().toLowerCase() : '';
 
     return listaUsuarios.filter(u => {
         const nivelUser = u.nivel ? u.nivel.toLowerCase() : '';
         const setorUser = u.setor ? u.setor.trim().toLowerCase() : '';
+        const superiorUser = u.superiorDireto ? u.superiorDireto.trim().toLowerCase() : '';
+        const nomeUser = u.usuario ? u.usuario.trim().toLowerCase() : '';
 
-        // Se for Sênior, pode ver todos os setores e níveis
+        // Sênior vê todos do setor Vendas
         if (nivelLogado === 'senior') {
-            return true; 
+            return setorUser === setorLogado; 
         }
 
-        // Para Pleno e Júnior, a regra obrigatoriamente exige que seja do mesmo setor
+        // Deve pertencer ao mesmo setor obrigatoriamente
         if (setorUser !== setorLogado) {
             return false;
         }
 
         if (nivelLogado === 'pleno') {
-            // Pleno vê Pleno e Júnior do seu próprio setor
-            return nivelUser === 'pleno' || nivelUser === 'junior'; 
+            // Pleno vê a si mesmo ou quem tem ele como superior direto
+            return nomeUser === nomeLogado || superiorUser === nomeLogado; 
         } else if (nivelLogado === 'junior') {
-            // Júnior vê apenas ele mesmo no seu setor
-            return u.usuario.toLowerCase() === logado.usuario.toLowerCase(); 
+            // Júnior vê apenas ele mesmo
+            return nomeUser === nomeLogado; 
         }
         
         return false;
