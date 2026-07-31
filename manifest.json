@@ -1,0 +1,20 @@
+{
+  "name": "Carbonera & Tomazini - Vendas",
+  "short_name": "Vendas",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#300c07",
+  "theme_color": "#300c07",
+  "icons": [
+    {
+      "src": "./assets/logo-escritorio.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./assets/logo-escritorio.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
