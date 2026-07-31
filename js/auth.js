@@ -1,24 +1,25 @@
 // 010. Módulo de Autenticação e Gestão de Sessão (Login e Permissões)
-const URL_WEB_APP = "https://script.google.com/macros/s/AKfycbzKs_U5cHE-r3hd3iIRFKiM0TR_JpTf7b6DAyLzRS8506sMWV3o83ir0_rymNIAIeEN/exec"; // Mantenha sua URL do Apps Script aqui
+const URL_WEB_APP = "https://script.google.com/macros/s/AKfycbzKs_U5cHE-r3hd3iIRFKiM0TR_JpTf7b6DAyLzRS8506sMWV3o83ir0_rymNIAIeEN/exec"; 
 
 let usuarioLogado = null;
 let setorAtivo = '';
 
-// Ao abrir ou atualizar a página (F5), recupera a sessão do sessionStorage se existir
+// Ao carregar a página, verifica se já há sessão salva
 window.addEventListener('DOMContentLoaded', () => {
     const usuarioSalvo = sessionStorage.getItem('usuarioLogado_ct');
     if (usuarioSalvo) {
         usuarioLogado = JSON.parse(usuarioSalvo);
         
-        // Atualiza a interface mantendo o estado logado
         document.getElementById('info-usuario-logado').innerText = `${usuarioLogado.usuario} (${usuarioLogado.nivel} - ${usuarioLogado.setor})`;
         document.getElementById('texto-botao-login').innerText = 'Trocar Usuário';
         
+        // Exibe o menu lateral e o botão de hambúrguer
+        ativarMenuLateral(true);
         configurarInterfacePorAcesso();
     }
 });
 
-// 011. Função que executa a validação de usuário e senha com feedback de carregamento
+// 011. Função que executa a validação de usuário e senha
 function realizarLogin() {
     const usuarioInput = document.getElementById('usuario-input').value.trim();
     const senhaInput = document.getElementById('senha-input').value.trim();
@@ -46,7 +47,6 @@ function realizarLogin() {
             }
 
             usuarioLogado = encontrado;
-            // Salva na sessionStorage para persistir entre as telas (Home <-> Dados) mas limpar no F5
             sessionStorage.setItem('usuarioLogado_ct', JSON.stringify(usuarioLogado));
 
             fecharModalLogin();
@@ -54,11 +54,11 @@ function realizarLogin() {
             document.getElementById('info-usuario-logado').innerText = `${usuarioLogado.usuario} (${usuarioLogado.nivel} - ${usuarioLogado.setor})`;
             document.getElementById('texto-botao-login').innerText = 'Trocar Usuário';
 
+            // Exibe o menu lateral e libera as telas
+            ativarMenuLateral(true);
             configurarInterfacePorAcesso();
             
-            // Se estiver na home e logar com sucesso, já leva para os dados (ou mantém a preferência)
-            document.getElementById('tela-home').classList.add('hidden');
-            document.getElementById('tela-dados').classList.remove('hidden');
+            mudarParaTela('dados');
             carregarDadosPlanilha();
         })
         .catch(err => {
@@ -69,7 +69,7 @@ function realizarLogin() {
         });
 }
 
-// 012. Configuração visual e de restrição com base no Nível de Acesso
+// 012. Configuração visual por Nível de Acesso
 function configurarInterfacePorAcesso() {
     const containerSetores = document.getElementById('secao-setores-container');
     const gridSetores = document.getElementById('cards-setores-grid');
@@ -91,7 +91,7 @@ function configurarInterfacePorAcesso() {
     }
 }
 
-// 013. Funções de controle do modal de login e navegação
+// 013. Funções de controle de modais e menus
 function abrirModalLogin() {
     document.getElementById('modal-login').classList.remove('hidden');
     document.getElementById('usuario-input').focus();
@@ -101,7 +101,6 @@ function fecharModalLogin() {
     document.getElementById('modal-login').classList.add('hidden');
 }
 
-// Ouvidor global para fechar o modal com a tecla ESC
 window.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
         const modal = document.getElementById('modal-login');
@@ -111,14 +110,46 @@ window.addEventListener('keydown', function(event) {
     }
 });
 
-// Ao clicar no logotipo (Home), apenas alterna a visualização sem deslogar
-function mudarParaTela(tela) {
-    if(tela === 'home') {
-        document.getElementById('tela-home').classList.remove('hidden');
-        document.getElementById('tela-dados').classList.add('hidden');
+// Ativa ou desativa a exibição da barra lateral e do botão de hambúrguer
+function ativarMenuLateral(ativar) {
+    const sidebar = document.getElementById('sidebar-sistema');
+    const btnMenu = document.getElementById('btnMenu');
+    if (ativar) {
+        sidebar.classList.remove('hidden');
+        sidebar.classList.add('flex');
+        btnMenu.classList.remove('hidden'); // Mostra o botão hambúrguer no cabeçalho
+    } else {
+        sidebar.classList.add('hidden');
+        sidebar.classList.remove('flex');
+        btnMenu.classList.add('hidden');
     }
 }
 
+// Função para abrir/fechar o menu lateral clicando no botão do cabeçalho
 function toggleSidebar() {
-    // Função reservada para menu lateral
+    const sidebar = document.getElementById('sidebar-sistema');
+    if (sidebar.classList.contains('hidden')) {
+        sidebar.classList.remove('hidden');
+        sidebar.classList.add('flex');
+    } else {
+        sidebar.classList.add('hidden');
+        sidebar.classList.remove('flex');
+    }
+}
+
+// Navegação entre as telas internas
+function mudarParaTela(tela) {
+    if (tela === 'home') {
+        document.getElementById('tela-home').classList.remove('hidden');
+        document.getElementById('tela-dados').classList.add('hidden');
+    } else if (tela === 'dados') {
+        // Só permite ir para os dados se estiver logado
+        if (!usuarioLogado) {
+            alert('Por favor, faça o login primeiro.');
+            abrirModalLogin();
+            return;
+        }
+        document.getElementById('tela-home').classList.add('hidden');
+        document.getElementById('tela-dados').classList.remove('hidden');
+    }
 }
