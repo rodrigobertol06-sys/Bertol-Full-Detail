@@ -4,6 +4,20 @@ const URL_WEB_APP = "https://script.google.com/macros/s/AKfycbzKs_U5cHE-r3hd3iIR
 let usuarioLogado = null;
 let setorAtivo = '';
 
+// Ao abrir ou atualizar a página (F5), recupera a sessão do sessionStorage se existir
+window.addEventListener('DOMContentLoaded', () => {
+    const usuarioSalvo = sessionStorage.getItem('usuarioLogado_ct');
+    if (usuarioSalvo) {
+        usuarioLogado = JSON.parse(usuarioSalvo);
+        
+        // Atualiza a interface mantendo o estado logado
+        document.getElementById('info-usuario-logado').innerText = `${usuarioLogado.usuario} (${usuarioLogado.nivel} - ${usuarioLogado.setor})`;
+        document.getElementById('texto-botao-login').innerText = 'Trocar Usuário';
+        
+        configurarInterfacePorAcesso();
+    }
+});
+
 // 011. Função que executa a validação de usuário e senha com feedback de carregamento
 function realizarLogin() {
     const usuarioInput = document.getElementById('usuario-input').value.trim();
@@ -15,7 +29,6 @@ function realizarLogin() {
         return;
     }
 
-    // Feedback visual imediato de carregamento
     const textoOriginal = btnEntrar.innerHTML;
     btnEntrar.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Carregando...';
     btnEntrar.disabled = true;
@@ -23,7 +36,6 @@ function realizarLogin() {
     fetch(`${URL_WEB_APP}?acao=carregarUsuarios`)
         .then(res => res.json())
         .then(usuarios => {
-            // Restaura o botão
             btnEntrar.innerHTML = textoOriginal;
             btnEntrar.disabled = false;
 
@@ -34,32 +46,35 @@ function realizarLogin() {
             }
 
             usuarioLogado = encontrado;
+            // Salva na sessionStorage para persistir entre as telas (Home <-> Dados) mas limpar no F5
+            sessionStorage.setItem('usuarioLogado_ct', JSON.stringify(usuarioLogado));
+
             fecharModalLogin();
             
             document.getElementById('info-usuario-logado').innerText = `${usuarioLogado.usuario} (${usuarioLogado.nivel} - ${usuarioLogado.setor})`;
             document.getElementById('texto-botao-login').innerText = 'Trocar Usuário';
 
+            configurarInterfacePorAcesso();
+            
+            // Se estiver na home e logar com sucesso, já leva para os dados (ou mantém a preferência)
             document.getElementById('tela-home').classList.add('hidden');
             document.getElementById('tela-dados').classList.remove('hidden');
-
-            configurarInterfacePorAcesso();
             carregarDadosPlanilha();
         })
         .catch(err => {
             console.error('Erro no login:', err);
-            // Restaura o botão em caso de erro
             btnEntrar.innerHTML = textoOriginal;
             btnEntrar.disabled = false;
             alert('Erro ao conectar com a planilha de configurações.');
         });
 }
 
-// 012. Configuração visual e de restrição com base no Nível de Acesso (Senior, Pleno, Junior)
+// 012. Configuração visual e de restrição com base no Nível de Acesso
 function configurarInterfacePorAcesso() {
     const containerSetores = document.getElementById('secao-setores-container');
     const gridSetores = document.getElementById('cards-setores-grid');
     
-    if (usuarioLogado.nivel.toLowerCase() === 'senior') {
+    if (usuarioLogado && usuarioLogado.nivel.toLowerCase() === 'senior') {
         containerSetores.classList.remove('hidden');
         const setoresDisponiveis = ["Vendas", "SAC", "Financeiro", "Operações"]; 
         
@@ -70,7 +85,7 @@ function configurarInterfacePorAcesso() {
             </button>
         `).join('');
         setorAtivo = ''; 
-    } else {
+    } else if (usuarioLogado) {
         containerSetores.classList.add('hidden');
         setorAtivo = usuarioLogado.setor;
     }
@@ -86,7 +101,7 @@ function fecharModalLogin() {
     document.getElementById('modal-login').classList.add('hidden');
 }
 
-// Ouvidor global robusto para fechar o modal com a tecla ESC
+// Ouvidor global para fechar o modal com a tecla ESC
 window.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
         const modal = document.getElementById('modal-login');
@@ -96,6 +111,7 @@ window.addEventListener('keydown', function(event) {
     }
 });
 
+// Ao clicar no logotipo (Home), apenas alterna a visualização sem deslogar
 function mudarParaTela(tela) {
     if(tela === 'home') {
         document.getElementById('tela-home').classList.remove('hidden');
