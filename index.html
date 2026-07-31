@@ -84,16 +84,36 @@
         <!-- Container de Telas -->
         <main class="p-6 space-y-6 max-w-7xl w-full mx-auto overflow-y-auto flex-grow">
             
-            <!-- Tela Home / Inicial -->
-            <div id="tela-home" class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm text-center space-y-4">
-                <div class="max-w-md mx-auto space-y-2">
-                    <h2 class="text-xl font-bold" style="color: #300c07;">Bem-vindo ao Sistema</h2>
-                    <p class="text-xs text-slate-500">Selecione uma opção acima para acessar os relatórios restritos ou clique em Acesso Restrito para entrar com suas credenciais.</p>
-                    <button onclick="abrirModalLogin()" class="mt-4 px-6 py-3 text-white text-xs font-bold rounded-xl shadow-md transition-all" style="background-color: #300c07;">
-                        Fazer Login no Sistema
+           <!-- 017. Tela Home / Inicial com a Tabela de Filiais -->
+        <div id="tela-home" class="space-y-6">
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-base font-bold" style="color: #300c07;">Unidades e Filiais</h2>
+                        <p class="text-xs text-slate-500">Consulte abaixo os endereços e contatos de nossas unidades.</p>
+                    </div>
+                    <button onclick="abrirModalLogin()" class="px-4 py-2 text-white text-xs font-bold rounded-xl shadow-md transition-all" style="background-color: #300c07;">
+                        <i class="fa-solid fa-lock mr-1.5"></i> Fazer Login
                     </button>
                 </div>
+
+                <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead class="bg-slate-100 text-slate-700 sticky top-0 border-b border-slate-200">
+                            <tr>
+                                <th class="p-3 font-bold">Tipo</th>
+                                <th class="p-3 font-bold">Endereço</th>
+                                <th class="p-3 font-bold">Cidade/UF</th>
+                                <th class="p-3 font-bold">Telefone</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-filiais-corpo" class="divide-y divide-slate-200">
+                            <tr><td colspan="4" class="p-4 text-center text-slate-500">Carregando filiais...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+        </div>
 
             <!-- Tela de Dados -->
             <div id="tela-dados" class="space-y-6 hidden">
