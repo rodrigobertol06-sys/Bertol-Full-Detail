@@ -15,7 +15,7 @@
     <header class="bg-[#300c07] text-[#ffffff] shrink-0 z-40 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)]">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center gap-4">
             <div class="flex items-center gap-3">
-                <!-- Botão de menu (hambúrguer) que agora aparece no header quando logado -->
+                <!-- Botão de menu (hambúrguer) que aparece no header quando logado -->
                 <button id="btnMenu" onclick="toggleSidebar()" class="hidden p-2.5 rounded-lg text-[#cbd5e1] transition-colors bg-[#4a130b] hover:bg-[#5a1a10]">
                     <i class="fa-solid fa-bars"></i>
                 </button>
@@ -76,7 +76,7 @@
                     <i class="fa-solid fa-house w-4"></i> Início / Home
                 </button>
                 <button onclick="mudarParaTela('dados')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-[#300c07] transition-colors text-left">
-                    <i class="fa-solid fa-table w-4"></i> Dados Sincronizados
+                    <i class="fa-solid fa-chart-line w-4"></i> Painel de Atividades
                 </button>
             </nav>
         </aside>
@@ -113,7 +113,7 @@
             <!-- 018. Tela de Dados e Mini Cards de Setores -->
             <div id="tela-dados" class="space-y-6 hidden">
                 
-                <!-- 019. Seção Dinâmica de Mini Cards por Setor (Lido da Coluna Q) -->
+                <!-- 019. Seção Dinâmica de Mini Cards por Setor -->
                 <div id="secao-setores-container" class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hidden">
                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Setores Disponíveis</span>
                     <div id="container-mini-cards" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-2">
@@ -121,16 +121,16 @@
                     </div>
                 </div>
 
-                <!-- 020. Filtros em Card para o Setor de Vendas (Exibido apenas quando Vendas estiver ativo) -->
-<div id="painel-filtro-vendas" class="hidden bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
-    <div class="flex items-center justify-between">
-        <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Filtrar Atividades por Colaborador (Vendas):</span>
-    </div>
-    <!-- Alterado de flex-wrap para grid responsivo de mini cards -->
-    <div id="container-pilulas-usuarios" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-        <!-- Os cards de usuários de vendas serão injetados aqui via JS -->
-    </div>
-</div>
+                <!-- 020. Filtros em Card para o Setor de Vendas -->
+                <div id="painel-filtro-vendas" class="hidden bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Filtrar Atividades por Colaborador (Vendas):</span>
+                    </div>
+                    <div id="container-pilulas-usuarios" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                        <!-- Os cards de usuários de vendas serão injetados aqui via JS -->
+                    </div>
+                </div>
+
                 <!-- 021. Tabela de Dados Sincronizados -->
                 <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
                     <h3 id="titulo-painel-dados" class="font-bold text-sm" style="color: #300c07;">Dados Sincronizados</h3>
@@ -146,19 +146,6 @@
             </div>
         </main>
     </div>
-    <!-- 026. Menu Lateral de Navegação Atualizado -->
-<nav class="space-y-1 px-3 py-4">
-    <a href="#" onclick="mudarParaTela('home')" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100 transition-all">
-        <i class="fa-solid fa-house w-5 text-slate-500"></i>
-        <span>Início / Home</span>
-    </a>
-    
-    <!-- Se houver outras telas ou rotas de navegação que queira adicionar na lateral, inclua aqui -->
-    <a href="#" onclick="mudarParaTela('dados')" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100 transition-all">
-        <i class="fa-solid fa-chart-line w-5 text-slate-500"></i>
-        <span>Painel de Atividades</span>
-    </a>
-</nav>
 
     <!-- 009. Importação dos Módulos JS -->
     <script src="js/auth.js"></script>
