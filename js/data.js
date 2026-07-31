@@ -159,3 +159,35 @@ function filtrarPorUsuarioVendas(usuario) {
         carregarDadosPlanilha();
     }
 }
+// 032. Função de Seleção de Colaborador (Exibe Histórico e Formulário de Registro)
+function selecionarColaboradorVendas(nomeColaborador) {
+    const painelRegistro = document.getElementById('painel-registro-vendedor');
+    const tituloPainelDados = document.getElementById('titulo-painel-dados');
+    
+    // Se clicou em "Todos os Usuários" ou visão consolidada
+    if (!nomeColaborador || nomeColaborador === 'Todos') {
+        if (painelRegistro) {
+            painelRegistro.classList.add('hidden'); // Oculta o formulário de registro na visão geral
+        }
+        if (tituloPainelDados) {
+            tituloPainelDados.textContent = 'Dados Sincronizados (Visão Consolidada)';
+        }
+        // Aqui entra a sua lógica existente para carregar todos os dados...
+        return;
+    }
+
+    // Se clicou em um colaborador específico (ex: Nicole)
+    if (painelRegistro) {
+        painelRegistro.classList.remove('hidden'); // MOSTRA o card de registro de vendas!
+    }
+
+    if (tituloPainelDados) {
+        tituloPainelDados.textContent = `Histórico de Atividades / Acompanhamento: ${nomeColaborador}`;
+    }
+
+    // Filtra os dados da tabela para mostrar apenas o histórico deste colaborador
+    if (typeof filtrarDadosPorUsuario === 'function') {
+        filtrarDadosPorUsuario(nomeColaborador);
+    }
+}
+
