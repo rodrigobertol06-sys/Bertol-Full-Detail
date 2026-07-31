@@ -29,12 +29,21 @@
         </div>
     </header>
 
-    <!-- 007. Modal de Login -->
+   <!-- 007. Modal de Login (Com suporte a tecla Enter) -->
     <div id="modal-login" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
         <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4 mx-4 border border-slate-200">
             <h3 class="font-bold text-base" style="color: #300c07;">Identificação de Acesso</h3>
-            <input type="text" id="usuario-input" placeholder="Nome de Usuário" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-[#300c07]">
-            <input type="password" id="senha-input" placeholder="Sua senha" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-[#300c07]">
+            
+            <!-- Adicionado o evento onkeydown para disparar com Enter -->
+            <input type="text" id="usuario-input" placeholder="Nome de Usuário" 
+                   onkeydown="if(event.key === 'Enter') realizarLogin()" 
+                   class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-[#300c07]">
+            
+            <!-- Adicionado o evento onkeydown para disparar com Enter -->
+            <input type="password" id="senha-input" placeholder="Sua senha" 
+                   onkeydown="if(event.key === 'Enter') realizarLogin()" 
+                   class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-[#300c07]">
+            
             <button onclick="realizarLogin()" class="w-full py-3 text-white text-xs font-bold rounded-xl shadow-md" style="background-color: #300c07;">Entrar no Sistema</button>
         </div>
     </div>
