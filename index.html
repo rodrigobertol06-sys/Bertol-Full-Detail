@@ -47,9 +47,14 @@
                 </div>
             </div>
 
-            <button id="btnLoginOut" onclick="abrirModalLogin()" class="text-sm font-semibold px-4 py-2 rounded-lg transition-colors flex items-center text-[#ffffff]" style="background-color: #4a130b;">
-                <i class="fa-solid fa-lock mr-2"></i> Acesso Restrito
-            </button>
+            <div class="flex items-center gap-2">
+                <button onclick="carregarDadosPlanilha()" class="text-xs font-semibold px-3 py-2 rounded-lg transition-colors flex items-center text-[#ffffff]" style="background-color: #4a130b;" title="Sincronizar com a Planilha">
+                    <i class="fa-solid fa-rotate mr-1.5"></i> Sincronizar
+                </button>
+                <button id="btnLoginOut" onclick="abrirModalLogin()" class="text-sm font-semibold px-4 py-2 rounded-lg transition-colors flex items-center text-[#ffffff]" style="background-color: #4a130b;">
+                    <i class="fa-solid fa-lock mr-2"></i> Acesso Restrito
+                </button>
+            </div>
         </div>
     </header>
 
@@ -170,8 +175,8 @@
                     </div>
                     <div>
                         <span class="text-[10px] font-bold uppercase tracking-wider block" style="color: #300c07;">Programação</span>
-                        <span class="text-xl font-extrabold text-[#1e293b]">1</span>
-                        <span class="block text-[11px] text-[#64748b]">Próximos 7 dias</span>
+                        <span id="contador-registros" class="text-xl font-extrabold text-[#1e293b]">...</span>
+                        <span class="block text-[11px] text-[#64748b]">Registros na Planilha</span>
                     </div>
                 </button>
 
@@ -180,16 +185,26 @@
             <!-- CONTEÚDO DINÂMICO DOS PAINÉIS -->
             <div id="conteudo-dinamico" class="bg-white rounded-2xl p-6 border border-[#cbd5e1] space-y-4 fade-in">
                 
+                <!-- Painel 1: Setup & Dados da Planilha -->
                 <div id="painel-setup" class="secao-painel space-y-3">
                     <h3 class="font-bold text-sm flex items-center gap-2" style="color: #300c07;">
-                        <i class="fa-solid fa-sliders" style="color: #300c07;"></i> Parâmetros de Setup & Espessura
+                        <i class="fa-solid fa-table" style="color: #300c07;"></i> Dados Sincronizados da Planilha
                     </h3>
-                    <p class="text-xs text-[#64748b]">Aqui você gerencia os ajustes finos e a parametrização inicial para garantir tolerâncias precisas nos ciclos de produção industrial.</p>
-                    <div class="p-4 bg-[#f8fafc] rounded-xl border border-[#cbd5e1] text-xs text-[#64748b]">
-                        <strong style="color: #300c07;">Dica Técnica:</strong> Sempre valide a calibração dos sensores antes de iniciar a execução do lote.
+                    <p class="text-xs text-[#64748b]">Visualização em tempo real dos dados importados diretamente da planilha do Google Sheets.</p>
+                    
+                    <div class="overflow-x-auto custom-scroll max-h-[400px] border border-[#cbd5e1] rounded-xl">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead id="tabela-cabecalho" class="bg-[#f8fafc] text-[#300c07] uppercase border-b border-[#cbd5e1] sticky top-0">
+                                <!-- Cabeçalhos dinâmicos -->
+                            </thead>
+                            <tbody id="tabela-corpo" class="divide-y divide-[#cbd5e1]">
+                                <tr><td colspan="10" class="p-4 text-center text-[#64748b]">Carregando dados...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
+                <!-- Painel 2: Preparação -->
                 <div id="painel-preparacao" class="secao-painel space-y-3 hidden">
                     <h3 class="font-bold text-sm flex items-center gap-2" style="color: #300c07;">
                         <i class="fa-solid fa-broom" style="color: #300c07;"></i> Diretrizes de Preparação & Limpeza
@@ -197,6 +212,7 @@
                     <p class="text-xs text-[#64748b]">Garante a integridade do ambiente e previne contaminações cruzadas nas etapas de montagem e usinagem.</p>
                 </div>
 
+                <!-- Painel 3: Decapagem -->
                 <div id="painel-decapagem" class="secao-painel space-y-3 hidden">
                     <h3 class="font-bold text-sm flex items-center gap-2" style="color: #300c07;">
                         <i class="fa-solid fa-flask" style="color: #300c07;"></i> Processos de Decapagem Química
@@ -204,6 +220,7 @@
                     <p class="text-xs text-[#64748b]">Controle rigoroso de banhos químicos, concentrações de solução e tempos de imersão para remoção de óxidos.</p>
                 </div>
 
+                <!-- Painel 4: POP -->
                 <div id="painel-pop" class="secao-painel space-y-3 hidden">
                     <h3 class="font-bold text-sm flex items-center gap-2" style="color: #300c07;">
                         <i class="fa-solid fa-book-open" style="color: #300c07;"></i> Documentação e POP Operacional
@@ -216,8 +233,52 @@
         </main>
     </div>
 
-    <!-- SCRIPT DE CONTROLE -->
+    <!-- SCRIPT DE CONTROLE E INTEGRAÇÃO -->
     <script>
+        // Substitua pela URL do seu Web App do Google Apps Script
+        const URL_WEB_APP = "https://script.google.com/macros/s/AKfycbzKs_U5cHE-r3hd3iIRFKiM0TR_JpTf7b6DAyLzRS8506sMWV3o83ir0_rymNIAIeEN/exec";
+
+        window.onload = function() {
+            carregarDadosPlanilha();
+        };
+
+        function carregarDadosPlanilha() {
+            const corpo = document.getElementById('tabela-corpo');
+            const cabecalho = document.getElementById('tabela-cabecalho');
+            
+            corpo.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-[#64748b]">Buscando dados da planilha...</td></tr>`;
+
+            // Fazendo requisição HTTP via fetch para o Google Apps Script
+            fetch(URL_WEB_APP)
+                .then(response => response.json())
+                .then(dados => {
+                    if (!dados || dados.length === 0) {
+                        corpo.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-[#64748b]">Nenhum registro encontrado na planilha.</td></tr>`;
+                        document.getElementById('contador-registros').innerText = '0';
+                        return;
+                    }
+
+                    document.getElementById('contador-registros').innerText = dados.length;
+
+                    // Montar cabeçalhos
+                    const chaves = Object.keys(dados[0]);
+                    cabecalho.innerHTML = `<tr class="border-b border-[#cbd5e1]">` + 
+                        chaves.map(k => `<th class="p-3 font-bold">${k}</th>`).join('') + 
+                        `</tr>`;
+
+                    // Montar linhas da tabela
+                    corpo.innerHTML = dados.map(row => {
+                        return `<tr class="hover:bg-[#f8fafc] transition-colors">` + 
+                            chaves.map(k => `<td class="p-3 text-[#1e293b]">${row[k] !== undefined ? row[k] : ''}</td>`).join('') + 
+                            `</tr>`;
+                    }).join('');
+                })
+                .catch(erro => {
+                    console.error(erro);
+                    corpo.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-red-600">Erro ao carregar dados da planilha. Verifique a URL.</td></tr>`;
+                });
+        }
+
         function abrirModalLogin() {
             document.getElementById('modal-login').classList.remove('hidden');
         }
