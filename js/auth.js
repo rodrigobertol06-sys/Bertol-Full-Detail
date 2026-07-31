@@ -72,22 +72,24 @@ function realizarLogin() {
 // 012. Configuração visual por Nível de Acesso
 function configurarInterfacePorAcesso() {
     const containerSetores = document.getElementById('secao-setores-container');
-    const gridSetores = document.getElementById('cards-setores-grid');
     
     if (usuarioLogado && usuarioLogado.nivel.toLowerCase() === 'senior') {
         containerSetores.classList.remove('hidden');
-        const setoresDisponiveis = ["Vendas", "SAC", "Financeiro", "Operações"]; 
         
-        gridSetores.innerHTML = setoresDisponiveis.map(setor => `
-            <button onclick="filtrarPorSetor('${setor}')" class="p-3 rounded-xl border border-slate-200 bg-white text-left font-semibold hover:bg-slate-50 transition-all">
-                <span class="block font-bold text-[#300c07]">Setor: ${setor}</span>
-                <span class="text-[10px] text-slate-500">Acesso Master</span>
-            </button>
-        `).join('');
+        // Dispara a função do data.js para carregar dinamicamente os cards da Coluna Q
+        if (typeof carregarMiniCardsSetores === 'function') {
+            carregarMiniCardsSetores();
+        }
+        
         setorAtivo = ''; 
     } else if (usuarioLogado) {
         containerSetores.classList.add('hidden');
         setorAtivo = usuarioLogado.setor;
+        
+        // Se não for Senior, verifica se exibe pílulas caso o setor seja Vendas
+        if (typeof verificarFiltroVendas === 'function') {
+            verificarFiltroVendas();
+        }
     }
 }
 
