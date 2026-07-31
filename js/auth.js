@@ -13,7 +13,6 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('info-usuario-logado').innerText = `${usuarioLogado.usuario} (${usuarioLogado.nivel} - ${usuarioLogado.setor})`;
         document.getElementById('texto-botao-login').innerText = 'Trocar Usuário';
         
-        // Exibe o menu lateral e o botão de hambúrguer
         ativarMenuLateral(true);
         configurarInterfacePorAcesso();
     }
@@ -35,7 +34,10 @@ function realizarLogin() {
     btnEntrar.disabled = true;
 
     fetch(`${URL_WEB_APP}?acao=carregarUsuarios`)
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error('Erro na rede do Apps Script');
+            return res.json();
+        })
         .then(usuarios => {
             btnEntrar.innerHTML = textoOriginal;
             btnEntrar.disabled = false;
@@ -54,7 +56,6 @@ function realizarLogin() {
             document.getElementById('info-usuario-logado').innerText = `${usuarioLogado.usuario} (${usuarioLogado.nivel} - ${usuarioLogado.setor})`;
             document.getElementById('texto-botao-login').innerText = 'Trocar Usuário';
 
-            // Exibe o menu lateral e libera as telas
             ativarMenuLateral(true);
             configurarInterfacePorAcesso();
             
@@ -65,7 +66,7 @@ function realizarLogin() {
             console.error('Erro no login:', err);
             btnEntrar.innerHTML = textoOriginal;
             btnEntrar.disabled = false;
-            alert('Erro ao conectar com a planilha de configurações.');
+            alert('Erro ao conectar com a planilha de configurações. Verifique a implantação do Apps Script.');
         });
 }
 
@@ -76,7 +77,6 @@ function configurarInterfacePorAcesso() {
     if (usuarioLogado && usuarioLogado.nivel.toLowerCase() === 'senior') {
         containerSetores.classList.remove('hidden');
         
-        // Dispara a função do data.js para carregar dinamicamente os cards da Coluna Q
         if (typeof carregarMiniCardsSetores === 'function') {
             carregarMiniCardsSetores();
         }
@@ -86,7 +86,6 @@ function configurarInterfacePorAcesso() {
         containerSetores.classList.add('hidden');
         setorAtivo = usuarioLogado.setor;
         
-        // Se não for Senior, verifica se exibe pílulas caso o setor seja Vendas
         if (typeof verificarFiltroVendas === 'function') {
             verificarFiltroVendas();
         }
