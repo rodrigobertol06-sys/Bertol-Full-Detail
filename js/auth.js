@@ -65,9 +65,13 @@ function realizarLogin() {
             ativarMenuLateral(true);
             configurarInterfacePorAcesso();
             
+            // ---> ADICIONE ESTAS DUAS LINHAS AQUI <---
+            if (usuarioLogado.nivel.toLowerCase() === 'junior' && usuarioLogado.setor.toLowerCase() !== 'sistema') {
+                usuarioFiltroAtivo = usuarioLogado.usuario;
+            }
+
             mudarParaTela('dados');
             carregarDadosPlanilha();
-        })
         .catch(err => {
             console.error('Erro no login:', err);
             btnEntrar.innerHTML = textoOriginal;
