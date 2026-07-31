@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carbonera & Tomazini - Módulo de Aprendizagem e Processos</title>
+    <title>Carbonera & Tomazini - Controle de Processos</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -29,25 +29,57 @@
 </head>
 <body class="flex flex-col">
 
-    <!-- CABEÇALHO DA APLICAÇÃO -->
+    <!-- COMENTÁRIO: CABEÇALHO DA APLICAÇÃO COM LOGO/HOME E BOTÃO DE LOGIN -->
     <header class="bg-[#300c07] text-[#ffffff] shrink-0 z-40 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)]">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-                <div class="flex items-center gap-3">
-                    <div class="flex flex-col">
-                        <span class="text-xs md:text-sm font-bold tracking-wide text-white">Carbonera & Tomazini</span>
-                        <span class="text-[10px] md:text-xs text-[#cbd5e1]">Trilha de Aprendizagem e Controle de Processos</span>
-                    </div>
+            
+            <!-- Logo / Botão Home (Retorna para a tela de origem) -->
+            <div onclick="voltarHome()" class="flex items-center gap-3 cursor-pointer group">
+                <div class="w-8 h-8 bg-[#4a130b] rounded flex items-center justify-center border border-[#6b1b11] shadow-inner">
+                    <i class="fa-solid fa-shapes text-amber-500 text-sm"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xs md:text-sm font-bold tracking-wide text-white group-hover:text-amber-200 transition-colors">Carbonera & Tomazini</span>
+                    <span class="text-[10px] text-[#cbd5e1]">Dra. Nayara D. Serozini | CREFITO-10 425494-F</span>
                 </div>
             </div>
-            <div class="text-sm font-semibold px-4 py-2 rounded-lg flex items-center text-[#ffffff] bg-[#4a130b]">
-                <i class="fa-solid fa-graduation-cap mr-2"></i> Tutor IA Ativo
-            </div>
+
+            <!-- Botão de Acesso Restrito (Abre o Modal de Login) -->
+            <button onclick="abrirModalLogin()" class="bg-[#4a130b] hover:bg-[#5e1910] text-white text-xs font-semibold px-4 py-2 rounded-lg border border-[#6b1b11] flex items-center gap-2 transition-all shadow-sm">
+                <i class="fa-solid fa-lock text-[11px]"></i> Acesso Restrito
+            </button>
         </div>
     </header>
 
+    <!-- COMENTÁRIO: MODAL DE ACESSO RESTRITO (LOGIN) -->
+    <div id="modal-login" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden fade-in">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-100 relative space-y-4 mx-4">
+            
+            <!-- Cabeçalho do Modal com Botão Fechar -->
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-base text-[#300c07]">Acesso Restrito</h3>
+                <button onclick="fecharModalLogin()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Formulário de Login -->
+            <div class="space-y-3 pt-1">
+                <div>
+                    <input type="text" placeholder="Nome de Usuário" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-700 focus:outline-none focus:border-[#300c07] bg-slate-50/50">
+                </div>
+                <div>
+                    <input type="password" placeholder="Sua senha" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-700 focus:outline-none focus:border-[#300c07] bg-slate-50/50">
+                </div>
+                <button onclick="realizarLogin()" class="w-full py-3 bg-[#300c07] hover:bg-[#4a130b] text-white text-xs font-bold rounded-xl transition-all shadow-md">
+                    Entrar no Sistema
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="flex flex-1 max-w-7xl w-full mx-auto relative overflow-hidden">
-        <!-- CONTAINER COM ROLAGEM GERAL DA PÁGINA -->
+        <!-- COMENTÁRIO: CONTAINER PRINCIPAL DE CONTEÚDO -->
         <main class="page-scroll-container custom-scroll flex-grow p-6 w-full space-y-6">
             
             <!-- COMENTÁRIO: BARRA DE NAVEGAÇÃO DOS MÓDULOS DE OPERAÇÃO -->
@@ -103,7 +135,6 @@
 
             <!-- COMENTÁRIO: PAINEL DE CARDS DE INDICADORES / DASHBOARD -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                
                 <!-- Indicador: Pendências -->
                 <div class="bg-white rounded-2xl p-4 border border-rose-100 bg-gradient-to-br from-rose-50/50 to-white shadow-sm flex items-center gap-4">
                     <div class="p-3 bg-rose-600 text-white rounded-xl shadow-md flex items-center justify-center w-12 h-12 shrink-0">
@@ -151,12 +182,10 @@
                         <span class="block text-[11px] text-slate-500">Próximos 7 dias</span>
                     </div>
                 </div>
-
             </div>
 
             <!-- COMENTÁRIO: CONTEÚDO DINÂMICO DOS PAINÉIS DE CADA MÓDULO -->
             <div id="conteudo-dinamico" class="bg-[#ffffff] rounded-2xl p-6 border border-[#e2e8f0] space-y-4 fade-in">
-                
                 <!-- Painel 1: Setup & Espessura -->
                 <div id="painel-setup" class="secao-painel space-y-3">
                     <h3 class="font-bold text-sm text-[#300c07] flex items-center gap-2">
@@ -191,14 +220,36 @@
                     </h3>
                     <p class="text-xs text-[#64748b]">Repositório central de instruções de trabalho padronizadas para consulta rápida pela equipe no chão de fábrica.</p>
                 </div>
-
             </div>
 
         </main>
     </div>
 
-    <!-- COMENTÁRIO: SCRIPT DE CONTROLE DAS ABAS E NAVEGAÇÃO -->
+    <!-- COMENTÁRIO: SCRIPT DE CONTROLE (MODAL, ABAS E HOME) -->
     <script>
+        // Função para abrir o Modal de Login
+        function abrirModalLogin() {
+            document.getElementById('modal-login').classList.remove('hidden');
+        }
+
+        // Função para fechar o Modal de Login
+        function fecharModalLogin() {
+            document.getElementById('modal-login').classList.add('hidden');
+        }
+
+        // Função do Botão Home (Retorna para a tela de origem / reset)
+        function voltarHome() {
+            mudarSecao('setup');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Função simulada de Login
+        function realizarLogin() {
+            alert('Tentativa de login efetuada com sucesso!');
+            fecharModalLogin();
+        }
+
+        // Função de troca de seções de módulos
         function mudarSecao(idSecao) {
             const secoes = ['setup', 'preparacao', 'decapagem', 'pop'];
             
